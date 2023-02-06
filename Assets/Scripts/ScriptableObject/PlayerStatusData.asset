@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6779475555f9e24586059a254864153, type: 3}
+  m_Name: PlayerStatusData
+  m_EditorClassIdentifier: 
+  _BaseMaxHealth: 100
+  _BaseAttackModifier: 1
+  _BaseAttackSpeed: 1
+  _BaseSpeed: 5
+  Health: 100
+  MaxHealth: 100
+  AttackModifier: 1
+  AttackSpeedModifier: 1
+  Defense: 0
+  MoveSpeed: 5
+  Level: 5
+  IsInvincible: 1
+  _KilledExpModifier: 0

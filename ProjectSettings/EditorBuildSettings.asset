@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/InitialScene.unity
+    guid: 9b15fa9298eaea743bc4d52850cec1ae
+  - enabled: 1
+    path: Assets/Scenes/SandboxScene.unity
+    guid: c850ee8c3b14cc8459e7e186857cf567
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
+      guid: 88e0d31a09d61ea40b342181d9a95c99, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: f02a4c059703c5846ba2fe3d7b24d1e5,
+      type: 2}
