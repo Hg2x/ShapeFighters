@@ -23,6 +23,9 @@ public class GameInstance : MonoBehaviour
     [SerializeField] private GameObject _UIManagerGO;
     private UIManager _UIManager;
 
+    public static InputHandler GetInputHandler() { return _Instance._InputHandler; }
+    private InputHandler _InputHandler;
+
     private void Awake()
     {
         if (_Instance != null)
@@ -40,6 +43,12 @@ public class GameInstance : MonoBehaviour
         if (_UIManager == null)
         {
             _UIManager = Instantiate(_UIManagerGO).GetComponent<UIManager>();
+            _UIManager.gameObject.transform.SetParent(gameObject.transform);
+        }
+
+        if (_InputHandler == null)
+        {
+            _InputHandler = gameObject.AddComponent<InputHandler>();
             _UIManager.gameObject.transform.SetParent(gameObject.transform);
         }
     }

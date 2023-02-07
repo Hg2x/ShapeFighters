@@ -3,20 +3,19 @@ using UnityEngine;
 public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
 public delegate void LevelUpDelegate(int level);
 
-[RequireComponent(typeof(PlayerController))]
 public class PlayerUnit : UnitBase, IDamageable
 {
     public event ExpChangedDelegate OnExpChanged;
     public event LevelUpDelegate OnLevelUp;
     
-    private PlayerController _playerController;
-    private Vector2 _moveVector;
+    private InputHandler _InputHandler;
+    private Vector2 _MoveVector;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _playerController = GetComponent<PlayerController>();
+        _InputHandler = GameInstance.GetInputHandler();
     }
 
     protected override void Start()
@@ -29,9 +28,9 @@ public class PlayerUnit : UnitBase, IDamageable
 
     public void FixedUpdate()
     {
-        if (_moveVector != Vector2.zero)
+        if (_MoveVector != Vector2.zero)
         {
-            Move(_moveVector);
+            Move(_MoveVector);
         }
     }
 
@@ -39,7 +38,7 @@ public class PlayerUnit : UnitBase, IDamageable
     {
         base.Update();
 
-        _moveVector = _UnitData.MoveSpeed * _playerController.InputMoveVector;
+        _MoveVector = _UnitData.MoveSpeed * _InputHandler.InputMoveVector;
     }
 
     public void Damage(int damageTaken, DamageSource source)
