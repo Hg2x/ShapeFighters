@@ -18,6 +18,9 @@ public class InputHandler : MonoBehaviour
         _PlayerInputControl.Player.Enable();
         _PlayerInputControl.Player.Move.performed += SetInputMoveVector;
         _PlayerInputControl.Player.Move.canceled += SetInputMoveVector;
+#if DEBUG
+        _PlayerInputControl.Player.Debug.performed += ShowDebugMenu;
+#endif
     }
 
     private void OnDisable()
@@ -25,10 +28,18 @@ public class InputHandler : MonoBehaviour
         _PlayerInputControl.Player.Disable();
         _PlayerInputControl.Player.Move.performed -= SetInputMoveVector;
         _PlayerInputControl.Player.Move.canceled -= SetInputMoveVector;
+#if DEBUG
+        _PlayerInputControl.Player.Debug.performed -= ShowDebugMenu;
+#endif
     }
 
     private void SetInputMoveVector(InputAction.CallbackContext context)
     {
         _InputMoveVector = context.ReadValue<Vector2>();
+    }
+
+    private void ShowDebugMenu(InputAction.CallbackContext context)
+    {
+        UIManager.Show<DebugMenu>();
     }
 }

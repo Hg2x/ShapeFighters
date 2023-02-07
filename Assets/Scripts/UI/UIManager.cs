@@ -45,6 +45,11 @@ public class UIManager : MonoBehaviour
 
     public static void Show<T>(bool hidePreviousUI = false) where T : UIBase
     {
+        if (_Instance._CurrentUI is T)
+        {
+            return;
+        }
+
         // Gets and show UI that was already created previously
         foreach (var uiToShow in _Instance._CreatedUIList)
         {
@@ -91,7 +96,12 @@ public class UIManager : MonoBehaviour
             if (_Instance._CurrentUI != null)
             {
                 _Instance._CurrentUI.Hide();
-                ShowCreatedUI(_Instance._OpenUIhistory.Pop());
+                var previousUI = _Instance._OpenUIhistory.Pop();
+                if (_Instance._CurrentUI != null)
+                {
+                    previousUI.Show();
+                    _Instance._CurrentUI = previousUI;
+                }
             }
         }
         else
@@ -106,19 +116,5 @@ public class UIManager : MonoBehaviour
         _Instance._CreatedUIList.Clear();
         _Instance._CurrentUI = null;
         _Instance._OpenUIhistory.Clear();
-    }
-
-    private static void ShowCreatedUI(UIBase ui, bool hidePreviousUI = false)
-    {
-        if (_Instance._CurrentUI != null)
-        {
-            _Instance._OpenUIhistory.Push(_Instance._CurrentUI);
-
-            if (hidePreviousUI)
-                _Instance._CurrentUI.Hide();
-
-            ui.Show();
-            _Instance._CurrentUI = ui;
-        }
     }
 }

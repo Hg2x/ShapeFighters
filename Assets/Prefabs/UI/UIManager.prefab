@@ -47,6 +47,7 @@ MonoBehaviour:
   _StartingUI: {fileID: 5882270114090078173, guid: 065aac75698817144964395fcc5f9b1c,
     type: 3}
   _UICollection:
+  - {fileID: 39745150149844310, guid: 6b024fdd1325db44f967ad629d486c8c, type: 3}
   - {fileID: 5882270114090078173, guid: 065aac75698817144964395fcc5f9b1c, type: 3}
   - {fileID: 1820091672538907299, guid: 2c63c5b9c1827ff4e8892046af99c2d2, type: 3}
   - {fileID: -679374761549135825, guid: 67618db2ec0b02a4584c9abd06a741e0, type: 3}

@@ -10,6 +10,12 @@ public class PauseUI : UIBase
         GameInstance.ResumeGame();
     }
 
+    public override void Show()
+    {
+        base.Show();
+        GameInstance.PauseGame();
+    }
+
     public void OnResumeButtonClicked()
     {
         Close();

@@ -22,7 +22,6 @@ public class PlayerUnit : UnitBase, IDamageable
     {
         base.Start();
 
-        _UnitData.IsInvincible = true;
         GameInstance.GetWeaponManager().InitPlayerWeapon();
     }
 
