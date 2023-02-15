@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
+public delegate void WeaponSwitchedDelegate(int firstSlotIndex, int secondSlotIndex);
+
 public class WeaponManager : MonoBehaviour
 {
+    public event WeaponSwitchedDelegate OnWeaponSwitched;
+
     [SerializeField] private WeaponBase[] _WeaponCollection;
     private readonly WeaponBase[] _EquippedWeapons = new WeaponBase[Const.MAX_WEAPON_SLOT]; // 0 = head, 1 = upper body, 2 = lower body, 3 = arm
-    private readonly Coroutine[] _WeaponCoroutines = new Coroutine[Const.MAX_WEAPON_SLOT];
 
     public int[] GetEquippedWeaponID()
     {
@@ -107,11 +111,16 @@ public class WeaponManager : MonoBehaviour
     {
         var weaponToEquip = GetWeapon(weaponID);
         _EquippedWeapons[index] = Instantiate(weaponToEquip); // TODO: check what happens to memory if there is alrdy a weapon equipped here  previously
+        return OnWeaponEquipped(index);
+    }
+
+    private bool OnWeaponEquipped(int index)
+    {
         if (_EquippedWeapons[index] != null)
         {
-            _EquippedWeapons[index].Init(GameInstance.GetLevelManager().PlayerUnitReference);
+            _EquippedWeapons[index].Init(GameInstance.GetLevelManager().PlayerUnitReference); // TODO: maybe change name
             _EquippedWeapons[index].ChangeSlot((WeaponSlot)index);
-            ActivateWeapon(index);
+            _EquippedWeapons[index].Activate();
             return true;
         }
         return false;
@@ -137,6 +146,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         ActivateAllWeapons();
+        OnWeaponSwitched?.Invoke(index1, index2);
     }
 
     private T GetWeapon<T>() where T : WeaponBase
@@ -170,15 +180,10 @@ public class WeaponManager : MonoBehaviour
     {
         for (int i = 0; i < Const.MAX_WEAPON_SLOT; ++i)
         {
-            ActivateWeapon(i);
-        }
-    }
-
-    private void ActivateWeapon(int index)
-    {
-        if (_EquippedWeapons[index] != null)
-        {
-            _WeaponCoroutines[index] = StartCoroutine(StartWeaponSkill(_EquippedWeapons[index]));
+            if (_EquippedWeapons[i] != null)
+            {
+                _EquippedWeapons[i].Activate();
+            }
         }
     }
 
@@ -186,22 +191,10 @@ public class WeaponManager : MonoBehaviour
     {
         for (int i = 0; i < Const.MAX_WEAPON_SLOT; ++i)
         {
-            if (_WeaponCoroutines[i] != null)
+            if (_EquippedWeapons[i] != null)
             {
-                StopCoroutine(_WeaponCoroutines[i]);
+                _EquippedWeapons[i].Deactivate();
             }
-        }
-    }
-
-    private IEnumerator StartWeaponSkill(WeaponBase weapon)
-    {
-        while (true)
-        {
-            if (weapon != null)
-            {
-                weapon.UseSkill();
-            }
-            yield return new WaitForSeconds(weapon.AttackSpeed / GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier);
         }
     }
 }

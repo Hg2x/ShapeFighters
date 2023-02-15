@@ -19,7 +19,8 @@ public class WeaponCone : WeaponBase
     {
         base.Awake();
 
-        AttackSpeed = 1f;
+        _AttackSpeed = 1f;
+        _ActiveSkillCooldown = 30f;
     }
 
     override protected void LowerBodySkill() 
@@ -38,5 +39,21 @@ public class WeaponCone : WeaponBase
             rb.AddRelativeForce(new Vector3(0, _Speed, 0));
         }
         Destroy(cone, _Duration);
+    }
+
+    protected override void ApplyUpperBodyPassive()
+    {
+        base.ApplyUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", 1f, "+");
+    }
+
+    protected override void RemoveUpperBodyPassive()
+    {
+        base.RemoveUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", -1f, "+");
     }
 }

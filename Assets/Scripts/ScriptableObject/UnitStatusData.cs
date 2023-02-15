@@ -5,8 +5,9 @@ public class UnitStatusData : ScriptableObject
 {
     [Header("Base Stats, modify these to tweak stats")]
     [SerializeField] protected int _BaseMaxHealth = 100;
-    [SerializeField] protected float _BaseAttackModifier = 1f;
+    [SerializeField] protected float _BaseAttack = 1f;
     [SerializeField] protected float _BaseAttackSpeed = 1f;
+    [SerializeField] protected float _BaseDefense = 1f;
     [SerializeField] protected float _BaseSpeed = 5f;
 
     [Header("Calced Stats, for monitoring purposes only")]
@@ -15,7 +16,7 @@ public class UnitStatusData : ScriptableObject
     public int MaxHealth;
     public float AttackModifier;
     public float AttackSpeedModifier;
-    public int Defense;
+    public float DefenseModifer;
     public float MoveSpeed;
     public int Level;
     [HideInInspector] public float TurnSpeed { get; protected set; }
@@ -30,23 +31,76 @@ public class UnitStatusData : ScriptableObject
     [Header("Enemy specific")]
     [SerializeField] private float _KilledExpModifier;
 
+    public void ModifySetVariable<T>(string variableName, T value, string operation = "") // may want some error logs
+    {
+        System.Reflection.FieldInfo field = GetType().GetField(variableName);
+
+        if (field == null)
+        {
+            // not found error
+            return;
+        }
+
+        if (field.FieldType != typeof(int) && field.FieldType != typeof(float))
+        {
+            if (field.FieldType == typeof(T))
+            {
+                field.SetValue(this, value);
+            }
+            return;
+        }
+
+        float floatValue = (float)(object)value;
+        float currentValue = (float)field.GetValue(this);
+        switch (operation)
+        {
+            case "+":
+                currentValue += floatValue;
+                break;
+            case "-":
+                currentValue -= floatValue;
+                break;
+            case "*":
+                currentValue *= floatValue;
+                break;
+            case "/":
+                currentValue /= floatValue;
+                break;
+            default:
+                break;
+        }
+        if (typeof(T) == typeof(int))
+        {
+            field.SetValue(this, (int)currentValue);
+        }
+        else
+        {
+            field.SetValue(this, currentValue);
+        }
+    }
+
     public void Init()
     {
         ResetData();
         // TODO: implement a more scalable and dev-friendly way to fetch stats
     }
 
+    public void RefreshData()
+    {
+        
+    }
+
     public void ResetData()
     {
         Health = _BaseMaxHealth;
         MaxHealth = _BaseMaxHealth;
-        AttackModifier = _BaseAttackModifier;
+        AttackModifier = _BaseAttack;
         AttackSpeedModifier = _BaseAttackSpeed;
+        DefenseModifer = _BaseDefense;
         MoveSpeed = _BaseSpeed;
         TurnSpeed = MoveSpeed * 2;
 
         Level = 1;
-
 
         CurrentExp = 0;
         NextLevelExp = CalcNextLevelExp();

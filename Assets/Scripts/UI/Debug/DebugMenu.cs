@@ -40,4 +40,20 @@ public class DebugMenu : UIBase
     {
         GameInstance.GetLevelManager().PlayerStatusData.IsInvincible = !GameInstance.GetLevelManager().PlayerStatusData.IsInvincible;
     }
+
+    public void Test()
+    {
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 1f, "+");
+    }
+
+    public void Test2()
+    {
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", 0.2f, "-");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.2f, "-");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", 0.2f, "-");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 1f, "-");
+    }
 }

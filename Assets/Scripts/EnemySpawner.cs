@@ -115,7 +115,7 @@ public class EnemySpawner : MonoBehaviour
         {
             enemy = _EnemyPool.Dequeue();
         }
-        enemy.RefreshStats();
+        enemy.ResetStats();
         _EnemyAlive.Add(enemy);
         return enemy;
     }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public delegate void HealthChangedDelegate(int currentHealth, int maxHealth);
@@ -13,6 +14,8 @@ public abstract class UnitBase : MonoBehaviour
     [SerializeField] protected UnitStatusData _UnitData;
     protected Rigidbody _Rigidbody;
     [HideInInspector] public Vector3 CurrentDirection { get; protected set; }
+
+    protected List<BuffBase> _Buffs = new();
 
     protected virtual void Awake()
     {
@@ -45,9 +48,9 @@ public abstract class UnitBase : MonoBehaviour
                 OnUnitDied -= (d as UnitDiedDelegate);
     }
 
-    public void RefreshStats()
+    public void ResetStats()
     {
-        _UnitData.ResetHealth();
+        _UnitData.ResetData();
     }
 
     protected virtual void Move(Vector2 moveVector)

@@ -19,7 +19,8 @@ public class WeaponSphere : WeaponBase
     {
         base.Awake();
 
-        AttackSpeed = 1f;
+        _AttackSpeed = 1f;
+        _ActiveSkillCooldown = 60f;
 
         _Sphere = Instantiate(_SphereRef, transform);
         _Sphere.SetActive(false);
@@ -52,6 +53,45 @@ public class WeaponSphere : WeaponBase
 
     protected override void HeadSkill() 
     {
+        base.HeadSkill();
         _DurationLeft = 0.5f;
-    } 
+    }
+
+    protected override void ApplyUpperBodyPassive()
+    {
+        base.ApplyUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", 0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 1f, "+");
+    }
+
+    protected override void RemoveUpperBodyPassive()
+    {
+        base.RemoveUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", -0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", -0.2f, "+");
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", -1f, "+");
+    }
+
+    protected override void ApplyLowerBodyPassive()
+    {
+        base.ApplyLowerBodyPassive();
+
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 5f, "+");
+        // but slides
+    }
+
+    protected override void RemoveLowerBodyPassive()
+    {
+        base.RemoveLowerBodyPassive();
+
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", -5f, "+");
+        //but slides
+    }
 }

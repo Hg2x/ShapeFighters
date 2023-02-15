@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WeaponCube : WeaponBase
@@ -18,7 +19,8 @@ public class WeaponCube : WeaponBase
     {
         base.Awake();
 
-        AttackSpeed = 1f;
+        _AttackSpeed = 1f;
+        _ActiveSkillCooldown = 60f;
 
         _WideCube = Instantiate(_WideCubeRef, transform);
         _WideCube.SetActive(false);
@@ -49,8 +51,40 @@ public class WeaponCube : WeaponBase
         }
     }
 
-    override protected void UpperBodySkill() 
+    protected override void ActiveSkill()
+    {
+        base.ActiveSkill();
+
+        // TODO: implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("IsInvincible", true);
+        _ActiveSkillCooldownLeft = _ActiveSkillCooldown;
+        StartCoroutine(TurnOffInvinciblility());
+    }
+
+    private IEnumerator TurnOffInvinciblility()
+    {
+        yield return new WaitForSeconds(5f);
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("IsInvincible", false);
+    }
+
+    protected override void UpperBodySkill() 
     {
         _DurationLeft = 0.5f;
+    }
+
+    protected override void ApplyUpperBodyPassive()
+    {
+        base.ApplyUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.5f, "+");
+    }
+
+    protected override void RemoveUpperBodyPassive()
+    {
+        base.RemoveUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.5f, "+");
     }
 }

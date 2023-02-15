@@ -16,7 +16,8 @@ public class WeaponCylinder : WeaponBase
     {
         base.Awake();
 
-        AttackSpeed = 1f;
+        _AttackSpeed = 1f;
+        _ActiveSkillCooldown = 90f;
     }
 
     protected override void ArmSkill()
@@ -38,5 +39,21 @@ public class WeaponCylinder : WeaponBase
                 cylinderComponent.SetDuration(_Duration);
             }
         }
+    }
+
+    protected override void ApplyUpperBodyPassive()
+    {
+        base.ApplyUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.5f, "+");
+    }
+
+    protected override void RemoveUpperBodyPassive()
+    {
+        base.RemoveUpperBodyPassive();
+
+        // implement as buff later
+        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.5f, "+");
     }
 }

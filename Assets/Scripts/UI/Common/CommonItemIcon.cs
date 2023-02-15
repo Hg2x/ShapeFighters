@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 
+[RequireComponent(typeof(Button))]
 public class CommonItemIcon : MonoBehaviour
 {
     public Button Button { get; protected set; }
