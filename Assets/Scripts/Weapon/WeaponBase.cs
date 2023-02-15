@@ -12,12 +12,14 @@ public abstract class WeaponBase : MonoBehaviour
     protected float _ActiveSkillCooldown;
     protected float _ActiveSkillCooldownLeft;
     protected bool _CanUseActiveSkill = false;
+    protected float _AttackSpeed;
 
     private Coroutine _UseSkillCoroutine;
 
     // TODO:
     // implement buff system
     // implement active skill
+    // implement sytem to load weapon numerical data
 
     // head = active skill
     // body = strong buff passive
@@ -43,14 +45,12 @@ public abstract class WeaponBase : MonoBehaviour
     // lower body = none for now
 
     // cylinder / mage
-    // head = multi casting, uses arm skill of all equipments for aset duration
+    // head = multi casting, uses arm skill of all equipments for a set duration
     // body = buffs atk
     // arm = attack
     // lower body = none for now
 
     protected PlayerUnit _Player;
-
-    protected float _AttackSpeed;
 
     protected virtual void Awake()
     {

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca689fa910562a74a940c7c330dc45a8, type: 3}
+  m_Name: SphereBodyBuff
+  m_EditorClassIdentifier: 
+  _ID: 1
+  _Duration: 1
+  _IsStackable: 0
+  _IsPermanent: 1
+  _ValueModifierKeys:
+  - AttackModifier
+  - DefenseModifier
+  - AttackSpeedModifier
+  - MoveSpeed
+  _ValueModifierValues:
+  - 0.2
+  - 0.2
+  - 0.2
+  - 1
+  _StatusModifiers: []

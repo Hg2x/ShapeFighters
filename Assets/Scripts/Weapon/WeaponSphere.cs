@@ -1,4 +1,6 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class WeaponSphere : WeaponBase
 {
@@ -8,6 +10,8 @@ public class WeaponSphere : WeaponBase
     private float _Angle;
     private float _DurationLeft = 0f;
     private GameObject _Sphere;
+
+    protected BuffBase _BodyBuff;
 
     public override int GetID()
     {
@@ -24,6 +28,12 @@ public class WeaponSphere : WeaponBase
 
         _Sphere = Instantiate(_SphereRef, transform);
         _Sphere.SetActive(false);
+
+        var request = Addressables.LoadAssetAsync<BuffBase>("SphereBodyBuff.asset");
+        request.Completed += op =>
+        {
+            _BodyBuff = op.Result;
+        };
     }
 
     private void FixedUpdate()
@@ -61,22 +71,28 @@ public class WeaponSphere : WeaponBase
     {
         base.ApplyUpperBodyPassive();
 
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", 0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", 0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 1f, "+");
+        if (_BodyBuff != null)
+        {
+            _BodyBuff.ApplyBuff();
+        }
+        else
+        {
+            Debug.LogError("BodyBuff is null error");
+        }
     }
 
     protected override void RemoveUpperBodyPassive()
     {
         base.RemoveUpperBodyPassive();
 
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackModifier", -0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("AttackSpeedModifier", -0.2f, "+");
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", -1f, "+");
+        if (_BodyBuff != null)
+        {
+            _BodyBuff.RemoveBuff();
+        }
+        else
+        {
+            Debug.LogError("BodyBuff is null error");
+        }
     }
 
     protected override void ApplyLowerBodyPassive()
