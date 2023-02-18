@@ -1,12 +1,13 @@
-using System.Collections;
 using UnityEngine;
 
 public class WeaponCube : WeaponBase
 {
     [SerializeField] private GameObject _WideCubeRef;
     [SerializeField] private float _Speed = 10f;
+    [SerializeField] private float _KnockbackForce = 5f;
     private float _Distance;
     private float _DurationLeft = 0f;
+    private bool _DoAttack;
     private GameObject _WideCube;
 
     public override int GetID()
@@ -19,15 +20,30 @@ public class WeaponCube : WeaponBase
     {
         base.Awake();
 
-        _AttackSpeed = 1f;
+        _BaseAttackSpeed = 1f;
         _ActiveSkillCooldown = 60f;
+        _ActiveBuffString = "CubeHeadBuff.asset";
+        _UpperBuffString = "CubeBodyBuff.asset";
+        _LowerBuffString = "CubeLowerBodyBuff.asset";
+        _DoAttack = false;
 
         _WideCube = Instantiate(_WideCubeRef, transform);
         _WideCube.SetActive(false);
+        _WideCube.TryGetComponent(out CubeWeaponComponent component);
+        if (component != null)
+        {
+            component.SetKnockbackForce(_KnockbackForce);
+        }    
     }
 
     private void FixedUpdate()
     {
+        if (_DoAttack && _DurationLeft <= 0)
+        {
+            _DurationLeft = 0.5f / _FinalAttackSpeed;
+            _DoAttack = false;
+        }
+
         if (_DurationLeft > 0)
         {
             _DurationLeft -= Time.fixedDeltaTime;
@@ -38,7 +54,7 @@ public class WeaponCube : WeaponBase
                 {
                     _WideCube.SetActive(true);
                     _Distance += _Speed * Time.fixedDeltaTime;
-                    Vector3 pos = _Player.transform.position + new Vector3(0, 0, _Distance + 1f);
+                    Vector3 pos = _Player.transform.position + new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
                     rb.MovePosition(pos);
                 }
                 else
@@ -51,40 +67,9 @@ public class WeaponCube : WeaponBase
         }
     }
 
-    protected override void ActiveSkill()
+    protected override void ArmSkill()
     {
-        base.ActiveSkill();
-
-        // TODO: implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("IsInvincible", true);
-        _ActiveSkillCooldownLeft = _ActiveSkillCooldown;
-        StartCoroutine(TurnOffInvinciblility());
-    }
-
-    private IEnumerator TurnOffInvinciblility()
-    {
-        yield return new WaitForSeconds(5f);
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("IsInvincible", false);
-    }
-
-    protected override void UpperBodySkill() 
-    {
-        _DurationLeft = 0.5f;
-    }
-
-    protected override void ApplyUpperBodyPassive()
-    {
-        base.ApplyUpperBodyPassive();
-
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.5f, "+");
-    }
-
-    protected override void RemoveUpperBodyPassive()
-    {
-        base.RemoveUpperBodyPassive();
-
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.5f, "+");
+        base.ArmSkill();
+        _DoAttack = true;
     }
 }

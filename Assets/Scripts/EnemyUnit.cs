@@ -4,7 +4,7 @@ public class EnemyUnit : UnitBase, IDamageable
 {
     public int SpawnIndex { get; protected set; }
     private Transform _Target;
-    private Vector2 _MoveDirection;
+    private Vector3 _MoveDirection;
 
     // TODO: implement better pathfinding
     public void Damage(int damageTaken, DamageSource source)
@@ -38,18 +38,13 @@ public class EnemyUnit : UnitBase, IDamageable
         _Rigidbody = GetComponent<Rigidbody>();
     }
 
-    protected void FixedUpdate()
-    {
-        Move(_UnitData.MoveSpeed * _MoveDirection);
-    }
-
     protected override void Update()
     {
         if (_Target != null)
         {
-            var direction = _Target.position - transform.position;
-            _MoveDirection = new Vector2(direction.x, direction.z).normalized;
+            _MoveDirection = _Target.position - transform.position;
         }
+        Move(_MoveDirection.normalized);
     }
 
     protected void OnCollisionEnter(Collision collision)

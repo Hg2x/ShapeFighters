@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca689fa910562a74a940c7c330dc45a8, type: 3}
-  m_Name: SphereBodyBuff
+  m_Name: SphereHeadBuff
   m_EditorClassIdentifier: 
-  _ID: 2
-  _Duration: 0
+  _ID: 1
+  _Duration: 8
   _IsStackable: 0
-  _IsPermanent: 1
+  _IsPermanent: 0
   _ValueModifierKeys:
   - AttackModifier
   - DefenseModifier

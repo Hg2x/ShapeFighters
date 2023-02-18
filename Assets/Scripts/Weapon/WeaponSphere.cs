@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -11,8 +10,6 @@ public class WeaponSphere : WeaponBase
     private float _DurationLeft = 0f;
     private GameObject _Sphere;
 
-    protected BuffBase _BodyBuff;
-
     public override int GetID()
     {
         _WeaponID = 1;
@@ -23,17 +20,14 @@ public class WeaponSphere : WeaponBase
     {
         base.Awake();
 
-        _AttackSpeed = 1f;
+        _BaseAttackSpeed = 1f;
         _ActiveSkillCooldown = 60f;
+        _ActiveBuffString = "SphereHeadBuff.asset";
+        _UpperBuffString = "SphereBodyBuff.asset";
+        _LowerBuffString = "SphereLowerBodyBuff.asset";
 
         _Sphere = Instantiate(_SphereRef, transform);
         _Sphere.SetActive(false);
-
-        var request = Addressables.LoadAssetAsync<BuffBase>("SphereBodyBuff.asset");
-        request.Completed += op =>
-        {
-            _BodyBuff = op.Result;
-        };
     }
 
     private void FixedUpdate()
@@ -61,53 +55,9 @@ public class WeaponSphere : WeaponBase
         }
     }
 
-    protected override void HeadSkill() 
+    protected override void ArmSkill() 
     {
-        base.HeadSkill();
+        base.ArmSkill();
         _DurationLeft = 0.5f;
-    }
-
-    protected override void ApplyUpperBodyPassive()
-    {
-        base.ApplyUpperBodyPassive();
-
-        if (_BodyBuff != null)
-        {
-            _BodyBuff.ApplyBuff();
-        }
-        else
-        {
-            Debug.LogError("BodyBuff is null error");
-        }
-    }
-
-    protected override void RemoveUpperBodyPassive()
-    {
-        base.RemoveUpperBodyPassive();
-
-        if (_BodyBuff != null)
-        {
-            _BodyBuff.RemoveBuff();
-        }
-        else
-        {
-            Debug.LogError("BodyBuff is null error");
-        }
-    }
-
-    protected override void ApplyLowerBodyPassive()
-    {
-        base.ApplyLowerBodyPassive();
-
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", 5f, "+");
-        // but slides
-    }
-
-    protected override void RemoveLowerBodyPassive()
-    {
-        base.RemoveLowerBodyPassive();
-
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("MoveSpeed", -5f, "+");
-        //but slides
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public abstract class WeaponBase : MonoBehaviour
 {
@@ -12,9 +13,20 @@ public abstract class WeaponBase : MonoBehaviour
     protected float _ActiveSkillCooldown;
     protected float _ActiveSkillCooldownLeft;
     protected bool _CanUseActiveSkill = false;
-    protected float _AttackSpeed;
+    protected float _BaseAttackSpeed;
+    protected float _FinalAttackSpeed;
+    protected bool _IsLocked = false; // TODO: broadcast event for IsLocked
 
-    private Coroutine _UseSkillCoroutine;
+    protected string _ActiveBuffString = "";
+    protected string _UpperBuffString = "";
+    protected string _LowerBuffString = "";
+
+    protected IEnumerator _ActiveSkill;
+    protected BuffBase _ActiveSkillBuff;
+    protected BuffBase _UpperBodyBuff;
+    protected BuffBase _LowerBodyBuff;
+
+    private IEnumerator _AttackCoroutine;
 
     // TODO:
     // implement buff system
@@ -26,36 +38,36 @@ public abstract class WeaponBase : MonoBehaviour
     // arm = attack
     // lower body = movement related
 
-    // sphere / well-rounded
-    // head = gains body sphere body buff for a certain period, 2x if switched back to body while in duration
-    // body = buff all stats by a small amount
-    // arm = attack
-    // lower body = moves faster but slides
-
-    // cube / tank knight
-    // head = becomes invincible for a set duration
-    // body = buffs defense
-    // arm = wide AoE that displaces enemy
-    // lower body = cannot move but damage received dereased by half
-
-    // cone / sniper
-    // head = active skill, starts charging and stops all attack, after done charging, will release a really strong single target attack
-    // body = buffs atk
-    // arm = single target dps heavy focused
-    // lower body = none for now
-
-    // cylinder / mage
-    // head = multi casting, uses arm skill of all equipments for a set duration
-    // body = buffs atk
-    // arm = attack
-    // lower body = none for now
-
     protected PlayerUnit _Player;
 
     protected virtual void Awake()
     {
         _WeaponID = GetID();
         _WeaponLevel = 1;
+    }
+
+    protected virtual void Start()
+    {
+        // may want to not use addresables for these?
+        if (_ActiveBuffString != "")
+        {
+            var reuqestActive = Addressables.LoadAssetAsync<BuffBase>(_ActiveBuffString);
+            _ActiveSkillBuff = reuqestActive.WaitForCompletion();
+            Addressables.Release(reuqestActive);
+            
+        }
+        if (_UpperBuffString != "")
+        {
+            var requestUB = Addressables.LoadAssetAsync<BuffBase>(_UpperBuffString);
+            _UpperBodyBuff = requestUB.WaitForCompletion();
+            Addressables.Release(requestUB);
+        }
+        if (_LowerBuffString != "")
+        {
+            var requestLB = Addressables.LoadAssetAsync<BuffBase>(_LowerBuffString);
+            _LowerBodyBuff = requestLB.WaitForCompletion();
+            Addressables.Release(requestLB);
+        }
     }
 
     protected void Update()
@@ -71,6 +83,7 @@ public abstract class WeaponBase : MonoBehaviour
         if (player != null)
         {
             _Player = player;
+            _AttackCoroutine = LoopArmAttack();
         }
         else
         {
@@ -86,14 +99,32 @@ public abstract class WeaponBase : MonoBehaviour
 
     public void Activate()
     {
-        _UseSkillCoroutine = StartCoroutine(LoopUseSkill()); // TODO: check this
+        if (_CurrentSlot == WeaponSlot.Arm)
+        {
+            StartAttacking(); // TODO: check this
+        }
         ApplyPassive();
     }
 
     public void Deactivate()
     {
-        StopCoroutine(_UseSkillCoroutine);
+        StopAttacking();
         RemovePassive();
+    }
+
+    public void StartAttacking()
+    {
+        StartCoroutine(_AttackCoroutine);
+    }
+
+    public void StopAttacking()
+    {
+        StopCoroutine(_AttackCoroutine);
+    }
+
+    public bool GetIsLocked()
+    {
+        return _IsLocked;
     }
 
     private void UseSkill()
@@ -173,29 +204,42 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
 
-    public virtual bool TryDoDamage(Collider collision)
+    public virtual bool TryDoDamage(Collider collision, float extraDmgMultiplier = 1f)
     {
         if (collision.gameObject.TryGetComponent(out IDamageable damageableObject))
         {
-            damageableObject.Damage(CalculateOutgoingDamage(), DamageSource.Friendly);
+            damageableObject.Damage(CalculateOutgoingDamage(extraDmgMultiplier), DamageSource.Friendly);
             Debug.Log("damaged enemy by" + CalculateOutgoingDamage());
             return true;
         }
         return false;
     }
 
-    protected virtual int CalculateOutgoingDamage()
+    protected virtual int CalculateOutgoingDamage(float extraDmgMultiplier = 1f)
     {
         var atkMod = GameInstance.GetLevelManager().PlayerStatusData.AttackModifier;
-        return (int)(_BaseDamage * atkMod) ;
+        return (int)(_BaseDamage * atkMod * extraDmgMultiplier) ;
     }
 
-    protected virtual void ActiveSkill() 
+    public virtual void UseActiveSkill() 
     {
-        if (!_CanUseActiveSkill || _CurrentSlot != WeaponSlot.Head)
+        if (CanUseActiveSkill())
         {
-            return;
+            _ActiveSkillCooldownLeft = _ActiveSkillCooldown;
+            if (_ActiveSkillBuff != null)
+            {
+                StartCoroutine(_ActiveSkillBuff.ApplyBuff());
+            }
+            if (_ActiveSkill != null)
+            {
+                StartCoroutine(_ActiveSkill);
+            }
         }
+    }
+
+    protected bool CanUseActiveSkill()
+    {
+        return _CanUseActiveSkill && _ActiveSkillCooldownLeft <= 0f;
     }
 
     protected virtual void HeadSkill() { }
@@ -204,21 +248,51 @@ public abstract class WeaponBase : MonoBehaviour
     protected virtual void ArmSkill() { }
 
     protected virtual void ApplyHeadPassive() { _CanUseActiveSkill = true; }
-    protected virtual void ApplyUpperBodyPassive() { }
-    protected virtual void ApplyLowerBodyPassive() { }
+    protected virtual void ApplyUpperBodyPassive() 
+    {
+        if (_UpperBodyBuff != null)
+        {
+            StartCoroutine(_UpperBodyBuff.ApplyBuff());
+        }
+    }
+    protected virtual void ApplyLowerBodyPassive() 
+    {
+        if (_LowerBodyBuff != null)
+        {
+            StartCoroutine(_LowerBodyBuff.ApplyBuff());
+        }
+    }
     protected virtual void ApplyArmPassive() { }
 
     protected virtual void RemoveHeadPassive() { _CanUseActiveSkill = false; }
-    protected virtual void RemoveUpperBodyPassive() { }
-    protected virtual void RemoveLowerBodyPassive() { }
+    protected virtual void RemoveUpperBodyPassive() 
+    {
+        if (_UpperBodyBuff != null)
+        {
+            _UpperBodyBuff.RemoveBuff();
+        }
+    }
+    protected virtual void RemoveLowerBodyPassive() 
+    {
+        if (_LowerBodyBuff != null)
+        {
+            _LowerBodyBuff.RemoveBuff();
+        }
+    }
     protected virtual void RemoveArmPassive() { }
 
-    protected IEnumerator LoopUseSkill()
+    protected IEnumerator LoopArmAttack() // do smth about this when not in arm
     {
         while (true)
         {
-            UseSkill();
-            yield return new WaitForSeconds(_AttackSpeed / GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier);
+            ArmSkill();
+            _FinalAttackSpeed = _BaseAttackSpeed * GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier;
+            if (_FinalAttackSpeed <= 0f)
+            {
+                Debug.LogError("FinalAttackSpeed cannot be 0 or less");
+                _FinalAttackSpeed = 1f;
+            }
+            yield return new WaitForSeconds(1 / _FinalAttackSpeed);
         }
     }
 }

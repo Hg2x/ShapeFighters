@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public delegate void HealthChangedDelegate(int currentHealth, int maxHealth);
@@ -19,7 +20,7 @@ public abstract class UnitBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _UnitData.Init();
+        _UnitData.Init(this);
         _Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -53,14 +54,34 @@ public abstract class UnitBase : MonoBehaviour
         _UnitData.ResetData();
     }
 
-    protected virtual void Move(Vector2 moveVector)
+    protected virtual void Move(Vector3 inputVector)
     {
-        _Rigidbody.angularVelocity = Vector3.zero;
+        if (_UnitData.IsSlippery)
+        {
+            SlipperyMove(inputVector);
+        }
+        else
+        {
+            _Rigidbody.angularVelocity = Vector3.zero;
 
-        var targetDirection = new Vector3(moveVector.x, 0f, moveVector.y) * Time.fixedDeltaTime;
-        _Rigidbody.MovePosition(_Rigidbody.transform.position + targetDirection);
+            var targetDirection = _UnitData.MoveSpeed * Time.deltaTime * inputVector;
+            if (!_UnitData.IsImmobile)
+            {
+                _Rigidbody.MovePosition(_Rigidbody.transform.position + targetDirection);
+            }
 
-        float singleStep = _UnitData.TurnSpeed * Time.fixedDeltaTime;
+            float singleStep = _UnitData.TurnSpeed * Time.deltaTime;
+            CurrentDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+            _Rigidbody.MoveRotation(Quaternion.LookRotation(CurrentDirection));
+        }
+    }
+
+    protected virtual void SlipperyMove(Vector3 inputVector)
+    {
+        var targetDirection = _UnitData.MoveSpeed * 1f * Time.deltaTime * inputVector;
+        _Rigidbody.AddForce(targetDirection, ForceMode.Impulse);
+
+        float singleStep = _UnitData.TurnSpeed * Time.deltaTime;
         CurrentDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
         _Rigidbody.MoveRotation(Quaternion.LookRotation(CurrentDirection));
     }
@@ -70,7 +91,8 @@ public abstract class UnitBase : MonoBehaviour
         // TODO: move these to UnitStatusData
         if (!_UnitData.IsInvincible)
         {
-            _UnitData.Health -= damageTaken;
+            float dmgFloat = damageTaken;
+            _UnitData.Health -= (int)(dmgFloat / Mathf.Pow(2, _UnitData.DefenseModifer));
             OnHealthChanged?.Invoke(_UnitData.Health, _UnitData.MaxHealth);
             if (_UnitData.Health <= 0)
             {

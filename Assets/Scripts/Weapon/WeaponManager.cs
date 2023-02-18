@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public delegate void WeaponSwitchedDelegate(int firstSlotIndex, int secondSlotIndex);
@@ -38,33 +36,16 @@ public class WeaponManager : MonoBehaviour
 
     public void InitPlayerWeapon()
     {
-        //var weaponGO = GetWeapon<WeaponCylinder>();
-        var aa = GetWeapon<WeaponCube>();
-        //var bb = GetWeapon<WeaponCone>();
+        var initialWeapon = GetWeapon<WeaponCube>();
 
-        _EquippedWeapons[1] = Instantiate(aa);
-        if (_EquippedWeapons[1] != null)
+        int i = 3;
+        _EquippedWeapons[i] = Instantiate(initialWeapon);
+        if (_EquippedWeapons[i] != null)
         {
             var player = GameInstance.GetLevelManager().PlayerUnitReference;
-            _EquippedWeapons[1].Init(player);
-            _EquippedWeapons[1].ChangeSlot(WeaponSlot.UpperBody);
+            _EquippedWeapons[i].Init(player);
+            _EquippedWeapons[i].ChangeSlot((WeaponSlot)i);
         }
-
-        //_EquippedWeapons[2] = Instantiate(bb);
-        //if (_EquippedWeapons[2] != null)
-        //{
-        //    var player = GameInstance.GetLevelManager().PlayerUnitReference;
-        //    _EquippedWeapons[2].Init(player);
-        //    _EquippedWeapons[2].ChangeSlot(WeaponSlot.LowerBody);
-        //}
-
-        //_EquippedWeapons[3] = Instantiate(weaponGO);
-        //if (_EquippedWeapons[3] != null)
-        //{
-        //    var player = GameInstance.GetLevelManager().PlayerUnitReference;
-        //    _EquippedWeapons[3].Init(player);
-        //    _EquippedWeapons[3].ChangeSlot(WeaponSlot.Arm);
-        //}
 
         ActivateAllWeapons();
     }
@@ -105,6 +86,40 @@ public class WeaponManager : MonoBehaviour
             // replaces exisitng weapon with new weapon
             return CreateAndEquipWeapon(weaponID, (int)slot);
         }
+    }
+
+    public void UseActiveSkill()
+    {
+        if (_EquippedWeapons[0] != null)
+        {
+            _EquippedWeapons[0].UseActiveSkill();
+        }
+    }
+
+    public void ToggleArmAttack(bool doAttack, int index = 3)
+    {
+        if (_EquippedWeapons[index] == null)
+        {
+            return;
+        }
+
+        if (doAttack)
+        {
+            _EquippedWeapons[index].StartAttacking();
+        }
+        else
+        {
+            _EquippedWeapons[index].StopAttacking();
+        }
+    }
+
+    public bool GetIsSlotLocked(WeaponSlot slot)
+    {
+        if (_EquippedWeapons[(int)slot] != null)
+        {
+            return _EquippedWeapons[(int)slot].GetIsLocked();
+        }
+        return false;
     }
 
     private bool CreateAndEquipWeapon(int weaponID, int index)

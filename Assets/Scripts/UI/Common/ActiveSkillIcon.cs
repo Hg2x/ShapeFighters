@@ -20,7 +20,11 @@ public class ActiveSkillIcon : MonoBehaviour
 
     public void Init()
     {
-        GameInstance.GetWeaponManager().OnWeaponSwitched += ChangeSkillIcon;
+        var weaponManager = GameInstance.GetWeaponManager();
+        if (weaponManager != null )
+        {
+            weaponManager.OnWeaponSwitched += ChangeSkillIcon;
+        }
     }
 
     private void ChangeSkillIcon(int firstWeaponSlot, int secondWeaponSlot)

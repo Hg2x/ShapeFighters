@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class WeaponCylinder : WeaponBase
 {
     [SerializeField] private GameObject _CylinderRef;
+    [SerializeField] private float _MulticastDuration = 5f;
 
     private readonly float _Duration = 2f;
 
@@ -16,8 +18,11 @@ public class WeaponCylinder : WeaponBase
     {
         base.Awake();
 
-        _AttackSpeed = 1f;
+        _BaseAttackSpeed = 1f;
         _ActiveSkillCooldown = 90f;
+
+        _ActiveSkill = MulticastAttack();
+        _UpperBuffString = "CylinderBodyBuff.asset";
     }
 
     protected override void ArmSkill()
@@ -41,19 +46,24 @@ public class WeaponCylinder : WeaponBase
         }
     }
 
-    protected override void ApplyUpperBodyPassive()
+    protected IEnumerator MulticastAttack()
     {
-        base.ApplyUpperBodyPassive();
+        for(int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
+        {
+            GameInstance.GetWeaponManager().ToggleArmAttack(true, i);
+        }
+        _IsLocked = true;
 
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", 0.5f, "+");
-    }
+        yield return new WaitForSeconds(_MulticastDuration);
 
-    protected override void RemoveUpperBodyPassive()
-    {
-        base.RemoveUpperBodyPassive();
-
-        // implement as buff later
-        GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable("DefenseModifier", -0.5f, "+");
+        for (int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
+        {
+            if ((WeaponSlot)i == WeaponSlot.Arm)
+            {
+                continue;
+            }
+            GameInstance.GetWeaponManager().ToggleArmAttack(false, i);
+        }
+        _IsLocked = false;
     }
 }

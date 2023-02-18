@@ -10,20 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca689fa910562a74a940c7c330dc45a8, type: 3}
-  m_Name: SphereBodyBuff
+  m_Name: ConeBodyBuff
   m_EditorClassIdentifier: 
-  _ID: 2
+  _ID: 7
   _Duration: 0
   _IsStackable: 0
   _IsPermanent: 1
   _ValueModifierKeys:
   - AttackModifier
-  - DefenseModifier
-  - AttackSpeedModifier
-  - MoveSpeed
   _ValueModifierValues:
-  - 0.2
-  - 0.1
-  - 0.2
-  - 1
+  - 0.5
   _StatusModifiers: []

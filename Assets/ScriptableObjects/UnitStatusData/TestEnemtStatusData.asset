@@ -15,14 +15,16 @@ MonoBehaviour:
   _BaseMaxHealth: 100
   _BaseAttack: 5
   _BaseAttackSpeed: 1
-  _BaseSpeed: 5
-  Health: 0
-  MaxHealth: 0
-  Attack: 0
-  AttackSpeed: 0
-  MoveSpeed: 0
-  Level: 0
+  _BaseDefense: 0
+  _BaseSpeed: 10
+  Health: 100
+  MaxHealth: 100
+  AttackModifier: 5
+  AttackSpeedModifier: 1
+  DefenseModifer: 1
+  MoveSpeed: 10
+  Level: 1
   IsInvincible: 0
-  _CurrentExp: 0
-  _NextLevelExp: 0
+  IsSlippery: 0
+  IsImmobile: 0
   _KilledExpModifier: 1.5

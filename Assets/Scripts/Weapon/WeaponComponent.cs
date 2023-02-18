@@ -2,9 +2,19 @@ using UnityEngine;
 
 public class WeaponComponent : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider collision)
+    protected float _ExtraDamageMultiplier = 1f;
+
+    public void SetExtraDamageMultiplier(float multiplier)
     {
-        transform.parent.GetComponent<WeaponBase>().TryDoDamage(collision);
+        if (multiplier > 1f)
+        {
+            _ExtraDamageMultiplier = multiplier;
+        }
+    }
+
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        transform.parent.GetComponent<WeaponBase>().TryDoDamage(other);
     }
 
     private void OnCollisionEnter(Collision collision)

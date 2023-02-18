@@ -119,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _HealthBar: {fileID: 7887785356800350476}
   _WeaponSlots: {fileID: 24412563787183083}
+  _ActiveSkillIcon: {fileID: 9061825382156337135}
   _PlayerStats: {fileID: 11400000, guid: fb6eadb5235471a4fa1ecf15171ff327, type: 2}
 --- !u!1001 &933365047351771368
 PrefabInstance:
@@ -425,7 +426,7 @@ PrefabInstance:
     - target: {fileID: 6673915837657578201, guid: fd7172f491f16d442b9858418b089d4b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd7172f491f16d442b9858418b089d4b, type: 3}
@@ -435,6 +436,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3753704181553358930}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9061825382156337135 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5320374300097189821, guid: fd7172f491f16d442b9858418b089d4b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3753704181553358930}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c4113c8af9efc4083b4009bf89d7d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8496104405091942580
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public class UnitStatusData : ScriptableObject
     [SerializeField] protected int _BaseMaxHealth = 100;
     [SerializeField] protected float _BaseAttack = 1f;
     [SerializeField] protected float _BaseAttackSpeed = 1f;
-    [SerializeField] protected float _BaseDefense = 1f;
+    [SerializeField] protected float _BaseDefense = 0f;
     [SerializeField] protected float _BaseSpeed = 5f;
 
     [Header("Calced Stats, for monitoring purposes only")]
@@ -21,7 +21,10 @@ public class UnitStatusData : ScriptableObject
     public int Level;
     [HideInInspector] public float TurnSpeed { get; protected set; }
 
-    public bool IsInvincible = false;
+    public bool IsInvincible;
+    // will need to find a better way to implement these status below
+    public bool IsSlippery;
+    public bool IsImmobile;
 
     // player specific
     public int CurrentExp { get; protected set; }
@@ -30,6 +33,8 @@ public class UnitStatusData : ScriptableObject
 
     [Header("Enemy specific")]
     [SerializeField] private float _KilledExpModifier;
+
+    protected UnitBase _Owner;
 
     public void ModifySetVariable<T>(string variableName, T value, string operation = "") // may want some error logs
     {
@@ -79,8 +84,14 @@ public class UnitStatusData : ScriptableObject
         }
     }
 
-    public void Init()
+    public void Init(UnitBase owner)
     {
+        if (owner == null)
+        {
+            Debug.LogError("Unit owner is null");
+            return;
+        }
+        _Owner = owner;
         ResetData();
         // TODO: implement a more scalable and dev-friendly way to fetch stats
     }
@@ -104,6 +115,10 @@ public class UnitStatusData : ScriptableObject
 
         CurrentExp = 0;
         NextLevelExp = CalcNextLevelExp();
+
+        IsInvincible = false;
+        IsSlippery = false;
+        IsImmobile = false;
     }
 
     public void ResetHealth()

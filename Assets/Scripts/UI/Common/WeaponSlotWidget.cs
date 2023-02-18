@@ -52,6 +52,11 @@ public class WeaponSlotWidget : MonoBehaviour
 
     private void OnSlotClicked(int index)
     {
+        if (GameInstance.GetWeaponManager().GetIsSlotLocked((WeaponSlot)index))
+        {
+            return;
+        }
+
         if (SlotIsSelected())
         {
             if (_SelectedIndex == index)

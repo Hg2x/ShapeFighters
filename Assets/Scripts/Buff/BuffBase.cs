@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,35 +33,36 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
         }
     }
 
-    public void Update()
-    {
-        if (!_IsPermanent)
-        {
-            _DurationLeft -= Time.deltaTime;
-
-            if (_DurationLeft <= 0f)
-            {
-                RemoveBuff();
-            }
-        }
-    }
-
-    public void ApplyBuff()
+    public IEnumerator ApplyBuff()
     {
         if (IsBuffApplied && !_IsStackable)
         {
-            return;
+            yield return null;
         }
 
         foreach (var valueMod in _ValueModifiers)
         {
             GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(valueMod.Key, valueMod.Value, "+");
         }
+        foreach (var statusMod in _StatusModifiers)
+        {
+            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(statusMod, true);
+        }
 
         // if stackable, add stacks
         _DurationLeft = _Duration;
         IsBuffApplied = true;
         Debug.Log("buff applied");
+
+        if (!_IsPermanent)
+        {
+            while (_DurationLeft > 0f)
+            {
+                _DurationLeft -= Time.deltaTime;
+                yield return null;
+            }
+            RemoveBuff();
+        }
     }
 
     public void RemoveBuff()
@@ -73,6 +75,10 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
         foreach (var valueMod in _ValueModifiers)
         {
             GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(valueMod.Key, -valueMod.Value, "+");
+        }
+        foreach (var statusMod in _StatusModifiers)
+        {
+            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(statusMod, false);
         }
 
         // if no stacks and IsStackable as well, else remove stacks only

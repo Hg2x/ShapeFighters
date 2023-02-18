@@ -50,7 +50,7 @@ public class LevelManager : MonoBehaviour
 
         PlayerUnitReference.gameObject.SetActive(true);
         GameInstance.GetCameraManager().SetCameraTarget(PlayerUnitReference.gameObject);
-        _EnemySpawner.StartSpawner();
+        StartEnemySpawn();
     }
 
     public void ResetLevel()
@@ -75,6 +75,22 @@ public class LevelManager : MonoBehaviour
         return null;
     }
 
+    public void StartEnemySpawn()
+    {
+        if (_EnemySpawner != null)
+        {
+            _EnemySpawner.StartSpawner();
+        }
+    }
+
+    public void StopEnemySpawn()
+    {
+        if (_EnemySpawner != null)
+        {
+            _EnemySpawner.StopSpawner();
+        }
+    }
+
     private void OnPlayerLevelUp(int level)
     {
         GameInstance.PauseGame();
@@ -85,6 +101,6 @@ public class LevelManager : MonoBehaviour
     {
         player.gameObject.SetActive(false);
         UIManager.Show<LevelFailUI>();
-        _EnemySpawner.StopSpawner();
+        StopEnemySpawn();
     }
 }

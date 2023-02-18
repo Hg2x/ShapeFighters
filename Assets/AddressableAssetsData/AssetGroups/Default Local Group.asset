@@ -41,6 +41,34 @@ MonoBehaviour:
     m_Address: SphereBodyBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: be5fe235ede4c434592d43086999b392
+    m_Address: SphereLowerBodyBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c64958ae93699734298e1a3e949cacf3
+    m_Address: SphereHeadBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8a38bc7b304d6104da344b7fc958d8b9
+    m_Address: CubeHeadBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ae6a5fbc80759da4393070ba679058d9
+    m_Address: CubeBodyBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 73726ed1bfbd15d4a9ca6a717e4c5551
+    m_Address: CubeLowerBodyBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3baa10169a1aadc4281b436f4b6ed4e8
+    m_Address: ConeBodyBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 63bf73f652c041b498dd473fe95a7086
+    m_Address: CylinderBodyBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 532b088ebba791447a2b556ed2461070, type: 2}
   m_SchemaSet:

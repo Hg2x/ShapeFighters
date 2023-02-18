@@ -4,6 +4,7 @@ public class BattleUI : UIBase
 {
     [SerializeField] private BattleUI_HealthBar _HealthBar;
     [SerializeField] private WeaponSlotWidget _WeaponSlots;
+    [SerializeField] private ActiveSkillIcon _ActiveSkillIcon;
 
     [SerializeField] private UnitStatusData _PlayerStats;
     private bool _DoneInit = false;
@@ -12,6 +13,7 @@ public class BattleUI : UIBase
     {
         _HealthBar.Init(_PlayerStats);
         _WeaponSlots.Init();
+        _ActiveSkillIcon.Button.onClick.AddListener(UseActiveSkill);
         _DoneInit = true;
     }
 
@@ -23,5 +25,10 @@ public class BattleUI : UIBase
             _HealthBar.RefreshDisplay(_PlayerStats);
             _WeaponSlots.RefreshSlots();
         }
+    }
+    
+    private void UseActiveSkill()
+    {
+        GameInstance.GetWeaponManager().UseActiveSkill();
     }
 }

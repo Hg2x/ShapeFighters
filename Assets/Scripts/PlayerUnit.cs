@@ -1,15 +1,19 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
 public delegate void LevelUpDelegate(int level);
 
+public delegate void MoveDelegate(Vector3 inputVector);
+
+
 public class PlayerUnit : UnitBase, IDamageable
 {
     public event ExpChangedDelegate OnExpChanged;
     public event LevelUpDelegate OnLevelUp;
-    
+    public MoveDelegate MoveDelegate;
+
     private InputHandler _InputHandler;
-    private Vector2 _MoveVector;
 
     protected override void Awake()
     {
@@ -25,19 +29,12 @@ public class PlayerUnit : UnitBase, IDamageable
         GameInstance.GetWeaponManager().InitPlayerWeapon();
     }
 
-    public void FixedUpdate()
-    {
-        if (_MoveVector != Vector2.zero)
-        {
-            Move(_MoveVector);
-        }
-    }
-
     protected override void Update()
     {
         base.Update();
 
-        _MoveVector = _UnitData.MoveSpeed * _InputHandler.InputMoveVector;
+        Vector3 inputVector3 = new(_InputHandler.InputMoveVector.x, 0f, _InputHandler.InputMoveVector.y);
+        Move(inputVector3);
     }
 
     public void Damage(int damageTaken, DamageSource source)
