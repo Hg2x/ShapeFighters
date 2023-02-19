@@ -1,11 +1,9 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
 public delegate void LevelUpDelegate(int level);
 
 public delegate void MoveDelegate(Vector3 inputVector);
-
 
 public class PlayerUnit : UnitBase, IDamageable
 {

@@ -1,35 +1,34 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UnitStatusData", menuName = "ScriptableObject/UnitStatusData", order = 1)]
+[CreateAssetMenu(fileName = "UnitStatusData", menuName = "ScriptableObject/UnitStatusData/Unit", order = 0)]
 public class UnitStatusData : ScriptableObject
 {
     [Header("Base Stats, modify these to tweak stats")]
-    [SerializeField] protected int _BaseMaxHealth = 100;
-    [SerializeField] protected float _BaseAttack = 1f;
-    [SerializeField] protected float _BaseAttackSpeed = 1f;
-    [SerializeField] protected float _BaseDefense = 0f;
-    [SerializeField] protected float _BaseSpeed = 5f;
+    [SerializeField][Min(0)] protected int _BaseMaxHealth = 100;
+    [SerializeField][Min(0f)] protected float _BaseAttack = 1f;
+    [SerializeField][Min(0f)] protected float _BaseAttackSpeed = 1f;
+    [SerializeField][Min(0f)] protected float _BaseDefense = 0f;
+    [SerializeField][Min(0f)] protected float _BaseSpeed = 5f;
 
     [Header("Calced Stats, for monitoring purposes only")]
     // TODO: generic SINGLE function to fetch these by value
-    public int Health;
-    public int MaxHealth;
-    public float AttackModifier;
-    public float AttackSpeedModifier;
-    public float DefenseModifer;
-    public float MoveSpeed;
-    public int Level;
+    [ReadOnlyField] public int Health;
+    [ReadOnlyField] public int MaxHealth;
+    [ReadOnlyField] public float AttackModifier;
+    [ReadOnlyField] public float AttackSpeedModifier;
+    [ReadOnlyField] public float DefenseModifer;
+    [ReadOnlyField] public float MoveSpeed;
+    [ReadOnlyField] public int Level;
     [HideInInspector] public float TurnSpeed { get; protected set; }
 
+    [Header("Unit Buff/Ailement Status")]
     public bool IsInvincible;
     // will need to find a better way to implement these status below
     public bool IsSlippery;
     public bool IsImmobile;
 
-    // player specific
-    public int CurrentExp { get; protected set; }
-    public int NextLevelExp { get; protected set; }
-    //
+    [ReadOnlyField] public int CurrentExp { get; protected set; }
+    [ReadOnlyField] public int NextLevelExp { get; protected set; }
 
     [Header("Enemy specific")]
     [SerializeField] private float _KilledExpModifier;

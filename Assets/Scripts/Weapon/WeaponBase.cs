@@ -1,15 +1,12 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public abstract class WeaponBase : MonoBehaviour
 {
     protected int _WeaponID;
     protected int _WeaponLevel;
     protected WeaponSlot _CurrentSlot = WeaponSlot.None;
-    protected int _BaseDamage = 10;
-    protected int _WeaponAmount = 1;
+    protected int _BaseDamage;
     protected float _ActiveSkillCooldown;
     protected float _ActiveSkillCooldownLeft;
     protected bool _CanUseActiveSkill = false;
@@ -17,21 +14,17 @@ public abstract class WeaponBase : MonoBehaviour
     protected float _FinalAttackSpeed;
     protected bool _IsLocked = false; // TODO: broadcast event for IsLocked
 
-    protected string _ActiveBuffString = "";
-    protected string _UpperBuffString = "";
-    protected string _LowerBuffString = "";
-
     protected IEnumerator _ActiveSkill;
     protected BuffBase _ActiveSkillBuff;
     protected BuffBase _UpperBodyBuff;
     protected BuffBase _LowerBodyBuff;
+    protected WeaponBaseData _WeaponData;
 
     private IEnumerator _AttackCoroutine;
 
     // TODO:
-    // implement buff system
-    // implement active skill
-    // implement sytem to load weapon numerical data
+    // double buff system
+    // double check weapons
 
     // head = active skill
     // body = strong buff passive
@@ -42,32 +35,12 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _WeaponID = GetID();
         _WeaponLevel = 1;
     }
 
     protected virtual void Start()
     {
-        // may want to not use addresables for these?
-        if (_ActiveBuffString != "")
-        {
-            var reuqestActive = Addressables.LoadAssetAsync<BuffBase>(_ActiveBuffString);
-            _ActiveSkillBuff = reuqestActive.WaitForCompletion();
-            Addressables.Release(reuqestActive);
-            
-        }
-        if (_UpperBuffString != "")
-        {
-            var requestUB = Addressables.LoadAssetAsync<BuffBase>(_UpperBuffString);
-            _UpperBodyBuff = requestUB.WaitForCompletion();
-            Addressables.Release(requestUB);
-        }
-        if (_LowerBuffString != "")
-        {
-            var requestLB = Addressables.LoadAssetAsync<BuffBase>(_LowerBuffString);
-            _LowerBodyBuff = requestLB.WaitForCompletion();
-            Addressables.Release(requestLB);
-        }
+        
     }
 
     protected void Update()
@@ -78,12 +51,33 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
 
-    public virtual void Init(PlayerUnit player)
+    public virtual void LoadWeaponData(string weaponDataString)
+    {
+        _AttackCoroutine = LoopArmAttack();
+
+        // may want to remove _WeaponData OR remove redundant variables
+        _WeaponData = FunctionLibrary.TryGetAssetSync<WeaponBaseData>(weaponDataString);
+        if (_WeaponData == null)
+        {
+            return;
+        }
+
+        _WeaponID = _WeaponData.WeaponID;
+        _BaseDamage = _WeaponData.BaseDamage;
+        _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
+        _ActiveSkillCooldown = _WeaponData.ActiveSkillCooldown;
+        _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
+        // may want to not use addresables for these?
+        _ActiveSkillBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.Head));
+        _UpperBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.UpperBody));
+        _LowerBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.LowerBody));
+    }
+
+    public virtual void SetPlayerReference(PlayerUnit player)
     {
         if (player != null)
         {
             _Player = player;
-            _AttackCoroutine = LoopArmAttack();
         }
         else
         {

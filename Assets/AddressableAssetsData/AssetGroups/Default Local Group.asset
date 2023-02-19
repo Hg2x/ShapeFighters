@@ -69,6 +69,42 @@ MonoBehaviour:
     m_Address: CylinderBodyBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 564886e79c882d54b85dcd20146fcc3d
+    m_Address: SphereData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f2e5bedae1674554db7bc8bda2331caa
+    m_Address: WeaponCone.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7e21af3a80a8c024cbbc402e9cad0b4c
+    m_Address: WeaponCube.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 499ad8cd2b06fd14e893097940d50bb7
+    m_Address: WeaponCylinder.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7cc36709f2310bb4caf127c3b8fb6c63
+    m_Address: WeaponSphere.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b138da1dac746634e89b48654ff8bc3f
+    m_Address: WeaponIDDictionary.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d62daaff7ba127e47a8d62917265092e
+    m_Address: CubeData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0f5b7a82d8b688546a13b8d7c0bd7712
+    m_Address: ConeData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bc1889fc8ee275842b4a2bbd27e4baf8
+    m_Address: CylinderData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 532b088ebba791447a2b556ed2461070, type: 2}
   m_SchemaSet:

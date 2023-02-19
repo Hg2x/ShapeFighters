@@ -3,47 +3,39 @@ using UnityEngine;
 public class WeaponCube : WeaponBase
 {
     [SerializeField] private GameObject _WideCubeRef;
-    [SerializeField] private float _Speed = 10f;
-    [SerializeField] private float _KnockbackForce = 5f;
+    private float _Speed;
+    private float _KnockbackForce;
     private float _Distance;
-    private float _DurationLeft = 0f;
+    private float _DurationLeft;
     private bool _DoAttack;
     private GameObject _WideCube;
 
-    public override int GetID()
+    public override void LoadWeaponData(string weaponDataString)
     {
-        _WeaponID = 2;
-        return base.GetID();
+        base.LoadWeaponData(weaponDataString);
+        if (_WeaponData != null)
+        {
+            _Speed = _WeaponData.Speed;
+            _KnockbackForce = _WeaponData.KnockbackForce;
+        }
     }
 
     protected override void Awake()
     {
         base.Awake();
 
-        _BaseAttackSpeed = 1f;
-        _ActiveSkillCooldown = 60f;
-        _ActiveBuffString = "CubeHeadBuff.asset";
-        _UpperBuffString = "CubeBodyBuff.asset";
-        _LowerBuffString = "CubeLowerBodyBuff.asset";
         _DoAttack = false;
 
         _WideCube = Instantiate(_WideCubeRef, transform);
-        _WideCube.SetActive(false);
         _WideCube.TryGetComponent(out CubeWeaponComponent component);
         if (component != null)
         {
             component.SetKnockbackForce(_KnockbackForce);
-        }    
+        }
     }
 
     private void FixedUpdate()
     {
-        if (_DoAttack && _DurationLeft <= 0)
-        {
-            _DurationLeft = 0.5f / _FinalAttackSpeed;
-            _DoAttack = false;
-        }
-
         if (_DurationLeft > 0)
         {
             _DurationLeft -= Time.fixedDeltaTime;
@@ -63,6 +55,15 @@ public class WeaponCube : WeaponBase
                     _Distance = 0f;
                     rb.MovePosition(_Player.transform.position + new Vector3(0, 0, 1f));
                 }
+            }
+        }
+        else
+        {
+            _WideCube.SetActive(false);
+            if (_DoAttack)
+            {
+                _DurationLeft = 0.5f / _FinalAttackSpeed;
+                _DoAttack = false;
             }
         }
     }

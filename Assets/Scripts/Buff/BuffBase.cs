@@ -3,12 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Buff", menuName = "ScriptableObject/Buff", order = 0)]
+[CreateAssetMenu(fileName = "BuffBase", menuName = "ScriptableObject/Buff/BuffBase", order = 0)]
 public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
 {
-    // TODO: this
-    // maybe create a dictionary for all buff ID?
-
     public bool IsBuffApplied { get; protected set; }
     [SerializeField] protected int _ID;
     [SerializeField] protected float _Duration;
@@ -21,8 +18,6 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
     protected float _DurationLeft;
     protected Dictionary<string, float> _ValueModifiers = new();
 
-    public void OnBeforeSerialize() { }
-
     public void OnAfterDeserialize()
     {
         _ValueModifiers = new Dictionary<string, float>();
@@ -32,6 +27,8 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
             _ValueModifiers.Add(_ValueModifierKeys[i], _ValueModifierValues[i]);
         }
     }
+
+    public void OnBeforeSerialize() { }
 
     public IEnumerator ApplyBuff()
     {

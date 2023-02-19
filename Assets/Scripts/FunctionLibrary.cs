@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class FunctionLibrary : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class FunctionLibrary : MonoBehaviour
         {
             for (int i = 0; i < amount; i++)
             {
-                int index = (int)(Random.value * (max - min + 1));
+                int index = (int)(UnityEngine.Random.value * (max - min + 1));
                 result[i] = numbers[index];
             }
         }
@@ -48,7 +49,7 @@ public class FunctionLibrary : MonoBehaviour
         {
             for (int i = 0; i < amount; i++)
             {
-                int index = (int)(Random.value * (max - min - i + 1)) + min + i;
+                int index = (int)(UnityEngine.Random.value * (max - min - i + 1)) + min + i;
                 result[i] = numbers[index];
                 numbers[index] = numbers[min + i];
             }
@@ -57,7 +58,17 @@ public class FunctionLibrary : MonoBehaviour
         return result;
     }
 
-
+    public static T TryGetAssetSync<T>(string addressablePathString) where T : UnityEngine.Object
+    {
+        if (!string.IsNullOrEmpty(addressablePathString))
+        {
+            var request = Addressables.LoadAssetAsync<T>(addressablePathString);
+            T asset = request.WaitForCompletion();
+            Addressables.Release(request);
+            return asset;
+        }
+        return null;
+    }
 
     // Functions below are specific to this project
 
@@ -76,5 +87,24 @@ public class FunctionLibrary : MonoBehaviour
             4 => "Cylinder",
             _ => "None"
         };
+    }
+}
+
+
+// Editor/Inspector related
+[AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+public class ReadOnlyFieldAttribute : PropertyAttribute
+{
+
+}
+
+[CustomPropertyDrawer(typeof(ReadOnlyFieldAttribute))]
+public class ReadOnlyDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        GUI.enabled = false;
+        EditorGUI.PropertyField(position, property, label, true);
+        GUI.enabled = true;
     }
 }

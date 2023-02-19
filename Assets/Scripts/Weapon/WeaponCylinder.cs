@@ -4,30 +4,29 @@ using UnityEngine;
 public class WeaponCylinder : WeaponBase
 {
     [SerializeField] private GameObject _CylinderRef;
-    [SerializeField] private float _MulticastDuration = 5f;
+    private float _MulticastDuration;
+    private float _Duration;
 
-    private readonly float _Duration = 2f;
-
-    public override int GetID()
+    public override void LoadWeaponData(string weaponDataString)
     {
-        _WeaponID = 4;
-        return base.GetID();
+        base.LoadWeaponData(weaponDataString);
+        if (_WeaponData != null)
+        {
+            _Duration = _WeaponData.AttackDuration;
+            _MulticastDuration = _WeaponData.ActiveSkillDuration;
+        }
     }
 
     protected override void Awake()
     {
         base.Awake();
 
-        _BaseAttackSpeed = 1f;
-        _ActiveSkillCooldown = 90f;
-
         _ActiveSkill = MulticastAttack();
-        _UpperBuffString = "CylinderBodyBuff.asset";
     }
 
     protected override void ArmSkill()
     {
-        var tempAmount = 3; // change to _WeaponAmount later
+        var tempAmount = 3; // TODO: change to _WeaponAmount later
         var enemyPositions = GameInstance.GetLevelManager().GetRandomDifferentEnemyPositions(tempAmount);
         if (tempAmount > enemyPositions.Length)
         {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public delegate void WeaponSwitchedDelegate(int firstSlotIndex, int secondSlotIndex);
@@ -6,8 +7,28 @@ public class WeaponManager : MonoBehaviour
 {
     public event WeaponSwitchedDelegate OnWeaponSwitched;
 
-    [SerializeField] private WeaponBase[] _WeaponCollection;
+    private readonly Dictionary<int, WeaponBase> _WeaponDictionary = new();
+    private readonly Dictionary<int, string> _IDStringDictionary = new();
     private readonly WeaponBase[] _EquippedWeapons = new WeaponBase[Const.MAX_WEAPON_SLOT]; // 0 = head, 1 = upper body, 2 = lower body, 3 = arm
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    public void Init()
+    {
+        // Load Weapons and their data
+        var dictionary = FunctionLibrary.TryGetAssetSync<IDStringDictionary>("WeaponIDDictionary.asset");
+        foreach (var pair in dictionary)
+        {
+            if (FunctionLibrary.TryGetAssetSync<GameObject>("Weapon" + pair.Value + ".prefab").TryGetComponent(out WeaponBase weapon))
+            {
+                _WeaponDictionary.Add(pair.Key, weapon);
+                _IDStringDictionary.Add(pair.Key, pair.Value);
+            }
+        }
+    }
 
     public int[] GetEquippedWeaponID()
     {
@@ -36,17 +57,17 @@ public class WeaponManager : MonoBehaviour
 
     public void InitPlayerWeapon()
     {
-        var initialWeapon = GetWeapon<WeaponCube>();
-
-        int i = 3;
-        _EquippedWeapons[i] = Instantiate(initialWeapon);
-        if (_EquippedWeapons[i] != null)
-        {
-            var player = GameInstance.GetLevelManager().PlayerUnitReference;
-            _EquippedWeapons[i].Init(player);
-            _EquippedWeapons[i].ChangeSlot((WeaponSlot)i);
-        }
-
+        //var weapon = GetWeapon(2);
+        //int i = 3;
+        //_EquippedWeapons[i] = Instantiate(weapon);
+        //if (_EquippedWeapons[i] != null)
+        //{
+        //    var player = GameInstance.GetLevelManager().PlayerUnitReference;
+        //    _EquippedWeapons[i].Init(player);
+        //    _EquippedWeapons[i].LoadWeaponData("CubeData.asset");
+        //    _EquippedWeapons[i].ChangeSlot((WeaponSlot)i);
+        //}
+        CreateAndEquipWeapon(2, 3);
         ActivateAllWeapons();
     }
 
@@ -126,6 +147,11 @@ public class WeaponManager : MonoBehaviour
     {
         var weaponToEquip = GetWeapon(weaponID);
         _EquippedWeapons[index] = Instantiate(weaponToEquip); // TODO: check what happens to memory if there is alrdy a weapon equipped here  previously
+        if (_IDStringDictionary.TryGetValue(weaponID, out string value))
+        {
+            _EquippedWeapons[index].LoadWeaponData(value + "Data.asset");
+        }
+        //_EquippedWeapons[index].LoadWeaponData(_IDStringDictionary.TryGetValue());
         return OnWeaponEquipped(index);
     }
 
@@ -133,7 +159,7 @@ public class WeaponManager : MonoBehaviour
     {
         if (_EquippedWeapons[index] != null)
         {
-            _EquippedWeapons[index].Init(GameInstance.GetLevelManager().PlayerUnitReference); // TODO: maybe change name
+            _EquippedWeapons[index].SetPlayerReference(GameInstance.GetLevelManager().PlayerUnitReference); // TODO: maybe change name
             _EquippedWeapons[index].ChangeSlot((WeaponSlot)index);
             _EquippedWeapons[index].Activate();
             return true;
@@ -164,27 +190,13 @@ public class WeaponManager : MonoBehaviour
         OnWeaponSwitched?.Invoke(index1, index2);
     }
 
-    private T GetWeapon<T>() where T : WeaponBase
-    {
-        foreach (var weapon in _WeaponCollection)
-        {
-            if (weapon is T weaponType)
-            {
-                return weaponType;
-            }
-        }
-
-        return null;
-    }
-
     private WeaponBase GetWeapon(int weaponID)
     {
-        foreach (var weapon in _WeaponCollection)
+        foreach (var pair in _WeaponDictionary)
         {
-            Debug.Log(weapon.GetID());
-            if (weapon.GetID() == weaponID)
+            if (pair.Key == weaponID)
             {
-                return weapon;
+                return pair.Value;
             }
         }
 

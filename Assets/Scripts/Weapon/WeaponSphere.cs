@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public class WeaponSphere : WeaponBase
 {
@@ -10,21 +9,9 @@ public class WeaponSphere : WeaponBase
     private float _DurationLeft = 0f;
     private GameObject _Sphere;
 
-    public override int GetID()
-    {
-        _WeaponID = 1;
-        return base.GetID();
-    }
-
     protected override void Awake()
     {
         base.Awake();
-
-        _BaseAttackSpeed = 1f;
-        _ActiveSkillCooldown = 60f;
-        _ActiveBuffString = "SphereHeadBuff.asset";
-        _UpperBuffString = "SphereBodyBuff.asset";
-        _LowerBuffString = "SphereLowerBodyBuff.asset";
 
         _Sphere = Instantiate(_SphereRef, transform);
         _Sphere.SetActive(false);

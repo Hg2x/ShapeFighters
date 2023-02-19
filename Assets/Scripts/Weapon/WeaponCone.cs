@@ -4,27 +4,27 @@ using UnityEngine;
 public class WeaponCone : WeaponBase
 {
     [SerializeField] private GameObject _ConeRef;
-    [SerializeField] private float _Speed = 1000f;
-    [SerializeField] private float _ChargeDuration = 5f;
+    private float _Duration;
+    private float _Speed;
+    private float _ChargeDuration;
     [SerializeField] private float _ActiveSkillDamageMulitplier = 10f;
 
-    private readonly float _Duration = 3f;
-
-    override public int GetID()
+    public override void LoadWeaponData(string weaponDataString)
     {
-        _WeaponID = 3;
-        return base.GetID();
+        base.LoadWeaponData(weaponDataString);
+        if (_WeaponData != null)
+        {
+            _Duration = _WeaponData.AttackDuration;
+            _Speed = _WeaponData.Speed;
+            _ChargeDuration = _WeaponData.ActiveSkillDuration;
+        }
     }
 
     protected override void Awake()
     {
         base.Awake();
 
-        _BaseAttackSpeed = 1f;
-        _ActiveSkillCooldown = 30f;
-
         _ActiveSkill = ChargedAttack();
-        _UpperBuffString = "ConeBodyBuff.asset";
     }
 
     protected override void ArmSkill() 
