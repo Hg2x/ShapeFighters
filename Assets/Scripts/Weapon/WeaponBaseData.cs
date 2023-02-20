@@ -39,6 +39,12 @@ public class WeaponBaseData : ScriptableObject
         get { return _KnockbackForce; }
     }
 
+    [SerializeField][Tooltip("In seconds, for non-buff")] protected float _ActiveSkillDamageMulitplier;
+    public float ActiveSkillDamageMulitplier
+    {
+        get { return _ActiveSkillDamageMulitplier; }
+    }
+
     [SerializeField][Min(0f)][Tooltip("In seconds, for non-buff")] protected float _ActiveSkillDuration;
     public float ActiveSkillDuration
     {
@@ -48,7 +54,7 @@ public class WeaponBaseData : ScriptableObject
     [SerializeField][Min(0f)][Tooltip("In seconds")] protected float _ActiveSkillCooldown;
     public float ActiveSkillCooldown
     {
-        get { return _ActiveSkillDuration; }
+        get { return _ActiveSkillCooldown; }
     }
 
     [SerializeField] protected string _ActiveBuffString = "";

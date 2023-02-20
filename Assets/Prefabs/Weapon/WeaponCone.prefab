@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 114a25a1375b0a0439fe304eb306db11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ConeRef: {fileID: 567027104360550535, guid: 558241b86d51cb540b0ec527d4e8c715, type: 3}
-  _Speed: 1000
+  _ConeRef: {fileID: 6159260137400715406, guid: 558241b86d51cb540b0ec527d4e8c715,
+    type: 3}
+  _ActiveSkillDamageMulitplier: 10

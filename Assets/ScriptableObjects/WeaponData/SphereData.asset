@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _WeaponID: 1
   _BaseDamage: 10
+  _AttackDuration: 1
+  _BaseAttackSpeed: 0.5
+  _Speed: 10
+  _KnockbackForce: 0
   _ActiveSkillDuration: 0
   _ActiveSkillCooldown: 60
-  _BaseAttackSpeed: 1
-  _Speed: 1
-  _KnockbackForce: 0
   _ActiveBuffString: SphereHeadBuff.asset
   _UpperBuffString: SphereBodyBuff.asset
   _LowerBuffString: SphereLowerBodyBuff.asset

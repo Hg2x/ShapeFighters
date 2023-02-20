@@ -2,18 +2,19 @@ using UnityEngine;
 
 public class WeaponSphere : WeaponBase
 {
-    [SerializeField] private GameObject _SphereRef;
-    [SerializeField] private float _Speed = 10f;
-    [SerializeField] private float _Radius = 5f;
+    [SerializeField] private WeaponComponent _SphereRef;
+    private float _Radius = 5f; // tweak this as well
     private float _Angle;
-    private float _DurationLeft = 0f;
+    private float _DurationLeft;
     private GameObject _Sphere;
+
+    // TODO: scaling multipliers and multiple sphere as level goes up
 
     protected override void Awake()
     {
         base.Awake();
 
-        _Sphere = Instantiate(_SphereRef, transform);
+        _Sphere = Instantiate(_SphereRef.gameObject, transform);
         _Sphere.SetActive(false);
     }
 
@@ -33,18 +34,23 @@ public class WeaponSphere : WeaponBase
 
                 rb.MovePosition(pos);
             }
-
             _DurationLeft -= Time.fixedDeltaTime;
-            if (_DurationLeft <= 0)
-            {
-                _Sphere.SetActive(false);
-            }
+        }
+        if (_DurationLeft <= 0)
+        {
+            _Sphere.SetActive(false);
         }
     }
 
     protected override void ArmSkill() 
     {
         base.ArmSkill();
-        _DurationLeft = 0.5f;
+
+        _Sphere.TryGetComponent(out WeaponComponent component);
+        if (component != null)
+        {
+            component.SetKnockbackForce(_KnockbackForce);
+        }
+        _DurationLeft = _Duration;
     }
 }

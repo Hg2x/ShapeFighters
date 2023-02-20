@@ -18,6 +18,7 @@ MonoBehaviour:
   _BaseAttackSpeed: 1
   _Speed: 1000
   _KnockbackForce: 0
+  _ActiveSkillDamageMulitplier: 10
   _ActiveSkillDuration: 5
   _ActiveSkillCooldown: 30
   _ActiveBuffString: 

@@ -3,14 +3,22 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
+    // Weapon Data Values, maybe move them to WeaponData?
     protected int _WeaponID;
+    protected int _BaseDamage;
+    protected float _Duration;
+    protected float _BaseAttackSpeed;
+    protected float _Speed;
+    protected float _KnockbackForce;
+    protected float _ActiveSkillDamageMulitplier; // may not be used in all weapons
+    protected float _ActiveSkillDuration; // may not be used in all weapons
+    protected float _ActiveSkillCooldown;
+
     protected int _WeaponLevel;
     protected WeaponSlot _CurrentSlot = WeaponSlot.None;
-    protected int _BaseDamage;
-    protected float _ActiveSkillCooldown;
+    
     protected float _ActiveSkillCooldownLeft;
     protected bool _CanUseActiveSkill = false;
-    protected float _BaseAttackSpeed;
     protected float _FinalAttackSpeed;
     protected bool _IsLocked = false; // TODO: broadcast event for IsLocked
 
@@ -23,8 +31,9 @@ public abstract class WeaponBase : MonoBehaviour
     private IEnumerator _AttackCoroutine;
 
     // TODO:
-    // double buff system
+    // double check buff system
     // double check weapons
+    // implement weapon upgrades
 
     // head = active skill
     // body = strong buff passive
@@ -55,7 +64,6 @@ public abstract class WeaponBase : MonoBehaviour
     {
         _AttackCoroutine = LoopArmAttack();
 
-        // may want to remove _WeaponData OR remove redundant variables
         _WeaponData = FunctionLibrary.TryGetAssetSync<WeaponBaseData>(weaponDataString);
         if (_WeaponData == null)
         {
@@ -64,7 +72,12 @@ public abstract class WeaponBase : MonoBehaviour
 
         _WeaponID = _WeaponData.WeaponID;
         _BaseDamage = _WeaponData.BaseDamage;
+        _Duration = _WeaponData.AttackDuration;
         _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
+        _Speed = _WeaponData.Speed;
+        _KnockbackForce = _WeaponData.KnockbackForce;
+        _ActiveSkillDamageMulitplier = _WeaponData.ActiveSkillDamageMulitplier;
+        _ActiveSkillDuration = _WeaponData.ActiveSkillDuration;
         _ActiveSkillCooldown = _WeaponData.ActiveSkillCooldown;
         _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
         // may want to not use addresables for these?

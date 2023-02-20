@@ -3,22 +3,12 @@ using UnityEngine;
 public class WeaponCube : WeaponBase
 {
     [SerializeField] private GameObject _WideCubeRef;
-    private float _Speed;
-    private float _KnockbackForce;
     private float _Distance;
     private float _DurationLeft;
     private bool _DoAttack;
     private GameObject _WideCube;
 
-    public override void LoadWeaponData(string weaponDataString)
-    {
-        base.LoadWeaponData(weaponDataString);
-        if (_WeaponData != null)
-        {
-            _Speed = _WeaponData.Speed;
-            _KnockbackForce = _WeaponData.KnockbackForce;
-        }
-    }
+    // TODO: scaling multipliers and multiple cube in 4 directions as level goes up
 
     protected override void Awake()
     {
@@ -62,7 +52,7 @@ public class WeaponCube : WeaponBase
             _WideCube.SetActive(false);
             if (_DoAttack)
             {
-                _DurationLeft = 0.5f / _FinalAttackSpeed;
+                _DurationLeft = _Duration / _FinalAttackSpeed;
                 _DoAttack = false;
             }
         }

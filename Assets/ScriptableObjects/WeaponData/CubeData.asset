@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _WeaponID: 2
   _BaseDamage: 10
-  _AttackDuration: 0
+  _AttackDuration: 0.5
   _BaseAttackSpeed: 1
   _Speed: 10
+  _KnockbackForce: 5
   _ActiveSkillDuration: 0
   _ActiveSkillCooldown: 60
-  _KnockbackForce: 5
   _ActiveBuffString: CubeHeadBuff.asset
   _UpperBuffString: CubeBodyBuff.asset
   _LowerBuffString: CubeLowerBodyBuff.asset

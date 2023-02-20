@@ -3,19 +3,9 @@ using UnityEngine;
 
 public class WeaponCylinder : WeaponBase
 {
-    [SerializeField] private GameObject _CylinderRef;
-    private float _MulticastDuration;
-    private float _Duration;
+    [SerializeField] private CylinderWeaponComponent _CylinderRef;
 
-    public override void LoadWeaponData(string weaponDataString)
-    {
-        base.LoadWeaponData(weaponDataString);
-        if (_WeaponData != null)
-        {
-            _Duration = _WeaponData.AttackDuration;
-            _MulticastDuration = _WeaponData.ActiveSkillDuration;
-        }
-    }
+    // TODO: scaling multipliers and more cylinder spawns as level goes up
 
     protected override void Awake()
     {
@@ -40,6 +30,8 @@ public class WeaponCylinder : WeaponBase
             cylinder.TryGetComponent(out CylinderWeaponComponent cylinderComponent);
             if (cylinderComponent != null)
             {
+                cylinderComponent.SetKnockbackForce(_KnockbackForce);
+                cylinderComponent.SetVerticalSpeed(_Speed);
                 cylinderComponent.SetDuration(_Duration);
             }
         }
@@ -53,7 +45,7 @@ public class WeaponCylinder : WeaponBase
         }
         _IsLocked = true;
 
-        yield return new WaitForSeconds(_MulticastDuration);
+        yield return new WaitForSeconds(_ActiveSkillDuration);
 
         for (int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
         {

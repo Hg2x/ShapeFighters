@@ -44,6 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6659c0e0130e8df46a089ac45e91abd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _CylinderRef: {fileID: 1285069963795905268, guid: 2bb79d1d044a8d34883a618096b804b8,
+  _CylinderRef: {fileID: 6583962331412284183, guid: 2bb79d1d044a8d34883a618096b804b8,
     type: 3}
-  _Speed: 1000

@@ -57,16 +57,6 @@ public class WeaponManager : MonoBehaviour
 
     public void InitPlayerWeapon()
     {
-        //var weapon = GetWeapon(2);
-        //int i = 3;
-        //_EquippedWeapons[i] = Instantiate(weapon);
-        //if (_EquippedWeapons[i] != null)
-        //{
-        //    var player = GameInstance.GetLevelManager().PlayerUnitReference;
-        //    _EquippedWeapons[i].Init(player);
-        //    _EquippedWeapons[i].LoadWeaponData("CubeData.asset");
-        //    _EquippedWeapons[i].ChangeSlot((WeaponSlot)i);
-        //}
         CreateAndEquipWeapon(2, 3);
         ActivateAllWeapons();
     }

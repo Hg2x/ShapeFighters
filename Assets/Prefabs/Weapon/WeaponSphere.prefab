@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3166b0d6f1d5c0742b2c6debf5887ec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _SphereRef: {fileID: 1292501652362791197, guid: ed582a07c4415944cb6c2c544d2f167e,
+  _SphereRef: {fileID: -6071949826310639522, guid: ed582a07c4415944cb6c2c544d2f167e,
     type: 3}
-  _Speed: 10
   _Radius: 5
