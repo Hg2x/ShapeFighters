@@ -10,20 +10,6 @@ public class WeaponCube : WeaponBase
 
     // TODO: scaling multipliers and multiple cube in 4 directions as level goes up
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _DoAttack = false;
-
-        _WideCube = Instantiate(_WideCubeRef, transform);
-        _WideCube.TryGetComponent(out CubeWeaponComponent component);
-        if (component != null)
-        {
-            component.SetKnockbackForce(_KnockbackForce);
-        }
-    }
-
     private void FixedUpdate()
     {
         if (_DurationLeft > 0)
@@ -35,7 +21,7 @@ public class WeaponCube : WeaponBase
                 if (_DurationLeft > 0)
                 {
                     _WideCube.SetActive(true);
-                    _Distance += _Speed * Time.fixedDeltaTime;
+                    _Distance += _BattleData.Speed * Time.fixedDeltaTime;
                     Vector3 pos = _Player.transform.position + new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
                     rb.MovePosition(pos);
                 }
@@ -52,9 +38,20 @@ public class WeaponCube : WeaponBase
             _WideCube.SetActive(false);
             if (_DoAttack)
             {
-                _DurationLeft = _Duration / _FinalAttackSpeed;
+                _DurationLeft = _BattleData.Duration / _FinalAttackSpeed;
                 _DoAttack = false;
             }
+        }
+    }
+
+    public override void LoadWeaponData(string weaponDataString)
+    {
+        base.LoadWeaponData(weaponDataString);
+        _WideCube = Instantiate(_WideCubeRef, transform);
+        _WideCube.TryGetComponent(out CubeWeaponComponent component);
+        if (component != null)
+        {
+            component.SetKnockbackForce(_BattleData.KnockbackForce);
         }
     }
 

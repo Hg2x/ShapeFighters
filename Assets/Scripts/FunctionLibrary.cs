@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -56,6 +57,28 @@ public class FunctionLibrary : MonoBehaviour
         }
 
         return result;
+    }
+
+    public static void FillZeroMemberFields<T>(T[] array) // where T ：array
+    {
+        WeaponBattleData tempData = new();
+        for (int i = 0; i < array.Length; i++)
+        {
+            FieldInfo[] fields = typeof(WeaponBattleData).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            foreach (FieldInfo field in fields)
+            {
+                object currentValue = field.GetValue(array[i]);
+                object tempValue = field.GetValue(tempData);
+                if ((currentValue is int notZero && notZero != 0) || (currentValue is float nonZero && nonZero != 0f))
+                {
+                    field.SetValue(tempData, currentValue);
+                }
+                else if ((tempValue is int notZero2 && notZero2 != 0) || (tempValue is float nonZero2 && nonZero2 != 0f))
+                {
+                    field.SetValue(array[i], tempValue);
+                }
+            }
+        }
     }
 
     public static T TryGetAssetSync<T>(string addressablePathString) where T : UnityEngine.Object

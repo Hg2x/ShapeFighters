@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: PlayerStatusData
   m_EditorClassIdentifier: 
   _BaseMaxHealth: 1000
-  _BaseAttack: 1
+  _BaseAttack: 2
   _BaseAttackSpeed: 1
   _BaseDefense: 0
   _BaseSpeed: 15
-  Health: 25
+  Health: 1000
   MaxHealth: 1000
   AttackModifier: 1
-  AttackSpeedModifier: 2.05
+  AttackSpeedModifier: 1
   DefenseModifer: 0
   MoveSpeed: 15
-  Level: 1
-  IsInvincible: 1
+  Level: 2
+  IsInvincible: 0
   IsSlippery: 0
   IsImmobile: 0
   _KilledExpModifier: 0

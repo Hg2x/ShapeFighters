@@ -13,14 +13,110 @@ MonoBehaviour:
   m_Name: ConeData
   m_EditorClassIdentifier: 
   _WeaponID: 3
-  _BaseDamage: 10
-  _AttackDuration: 3
-  _BaseAttackSpeed: 1
-  _Speed: 1000
-  _KnockbackForce: 0
-  _ActiveSkillDamageMulitplier: 10
-  _ActiveSkillDuration: 5
-  _ActiveSkillCooldown: 30
-  _ActiveBuffString: 
-  _UpperBuffString: ConeBodyBuff.asset
-  _LowerBuffString: 
+  _Data:
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1
+    Speed: 1000
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 30
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.1
+    Speed: 1000
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 30
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.2
+    Speed: 1000
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 30
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.3
+    Speed: 1000
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 30
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.4
+    Speed: 1000
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 30
+  - Damage: 20
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.5
+    Speed: 1200
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 4
+    ActiveSkillCooldown: 28
+  - Damage: 20
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.6
+    Speed: 1200
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 4
+    ActiveSkillCooldown: 28
+  - Damage: 20
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 1.8
+    Speed: 1200
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 4
+    ActiveSkillCooldown: 28
+  - Damage: 20
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 2
+    Speed: 1200
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 4
+    ActiveSkillCooldown: 28
+  - Damage: 50
+    Amount: 1
+    Size: 1
+    Duration: 3
+    Frequency: 2
+    Speed: 1500
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 10
+    ActiveSkillDuration: 3
+    ActiveSkillCooldown: 25
+  _ActiveBuff: 
+  _SlotPassiveBuffs:
+  - 
+  - ConeBodyBuff.asset
+  - 
+  - 

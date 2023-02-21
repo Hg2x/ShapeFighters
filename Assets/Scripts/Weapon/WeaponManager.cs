@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public delegate void WeaponSwitchedDelegate(int firstSlotIndex, int secondSlotIndex);
@@ -16,9 +17,8 @@ public class WeaponManager : MonoBehaviour
         Init();
     }
 
-    public void Init()
+    private void Init()
     {
-        // Load Weapons and their data
         var dictionary = FunctionLibrary.TryGetAssetSync<IDStringDictionary>("WeaponIDDictionary.asset");
         foreach (var pair in dictionary)
         {
@@ -75,7 +75,8 @@ public class WeaponManager : MonoBehaviour
             {
                 if (weaponID == _EquippedWeapons[i].GetID())
                 {
-                    // upgrade weapon.
+                    UpgradeWeapon(i);
+                    // todo: return false if at max level
                     return true;
                 }
             }
@@ -141,7 +142,6 @@ public class WeaponManager : MonoBehaviour
         {
             _EquippedWeapons[index].LoadWeaponData(value + "Data.asset");
         }
-        //_EquippedWeapons[index].LoadWeaponData(_IDStringDictionary.TryGetValue());
         return OnWeaponEquipped(index);
     }
 
@@ -212,6 +212,14 @@ public class WeaponManager : MonoBehaviour
             {
                 _EquippedWeapons[i].Deactivate();
             }
+        }
+    }
+
+    private void UpgradeWeapon(int index)
+    {
+        if (_EquippedWeapons[index] != null)
+        {
+            _EquippedWeapons[index].LevelUp();
         }
     }
 }

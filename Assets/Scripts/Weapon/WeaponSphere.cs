@@ -10,14 +10,6 @@ public class WeaponSphere : WeaponBase
 
     // TODO: scaling multipliers and multiple sphere as level goes up
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _Sphere = Instantiate(_SphereRef.gameObject, transform);
-        _Sphere.SetActive(false);
-    }
-
     private void FixedUpdate()
     {
         if (_DurationLeft > 0)
@@ -27,7 +19,7 @@ public class WeaponSphere : WeaponBase
             {
                 _Sphere.SetActive(true);
 
-                _Angle += _Speed * Time.fixedDeltaTime;
+                _Angle += _BattleData.Speed * Time.fixedDeltaTime;
                 float x = Mathf.Cos(_Angle) * _Radius;
                 float z = Mathf.Sin(_Angle) * _Radius;
                 Vector3 pos = _Player.transform.position + new Vector3(x, 0, z);
@@ -42,6 +34,13 @@ public class WeaponSphere : WeaponBase
         }
     }
 
+    public override void LoadWeaponData(string weaponDataString)
+    {
+        base.LoadWeaponData(weaponDataString);
+        _Sphere = Instantiate(_SphereRef.gameObject, transform);
+        _Sphere.SetActive(false);
+    }
+
     protected override void ArmSkill() 
     {
         base.ArmSkill();
@@ -49,8 +48,8 @@ public class WeaponSphere : WeaponBase
         _Sphere.TryGetComponent(out WeaponComponent component);
         if (component != null)
         {
-            component.SetKnockbackForce(_KnockbackForce);
+            component.SetKnockbackForce(_BattleData.KnockbackForce);
         }
-        _DurationLeft = _Duration;
+        _DurationLeft = _BattleData.Duration;
     }
 }

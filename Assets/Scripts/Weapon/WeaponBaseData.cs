@@ -1,4 +1,9 @@
+using System.Reflection;
 using UnityEngine;
+using UnityEditor;
+using System;
+using Unity.VisualScripting;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "WeaponBaseData", menuName = "ScriptableObject/WeaponData/BaseData", order = 0)]
 public class WeaponBaseData : ScriptableObject
@@ -9,71 +14,84 @@ public class WeaponBaseData : ScriptableObject
         get { return _WeaponID; }
     }
 
-    [SerializeField][Min(0)] protected int _BaseDamage;
-    public int BaseDamage
-    {
-        get { return _BaseDamage; }
-    }
+    [SerializeField] protected WeaponBattleData[] _Data = new WeaponBattleData[Const.MAX_WEAPON_LEVEL];
 
-    [SerializeField][Min(0f)][Tooltip("How long weapon stays on field")] protected float _AttackDuration;
-    public float AttackDuration
-    {
-        get { return _AttackDuration; }
-    }
+    [SerializeField] protected string _ActiveBuff = "";
+    [SerializeField] protected string[] _SlotPassiveBuffs = new string[Const.MAX_WEAPON_SLOT];
 
-    [SerializeField][Min(0f)][Tooltip("Attacks done per second")] protected float _BaseAttackSpeed;
-    public float BaseAttackSpeed
+    public WeaponBattleData GetWeaponBattleData(int level)
     {
-        get { return _BaseAttackSpeed; }
+        if (level < 0 || level >= _Data.Length)
+        {
+            Debug.LogError("WeaponBaseData.GetWeaponBattleData: level out of range");
+            return new WeaponBattleData();
+        }
+        return _Data[level];
     }
-
-    [SerializeField][Min(0f)][Tooltip("Weapon travel speed, if applicable")] protected float _Speed;
-    public float Speed
-    {
-        get { return _Speed; }
-    }
-
-    [SerializeField][Tooltip("Enemy knockback when hit")] protected float _KnockbackForce;
-    public float KnockbackForce
-    {
-        get { return _KnockbackForce; }
-    }
-
-    [SerializeField][Tooltip("In seconds, for non-buff")] protected float _ActiveSkillDamageMulitplier;
-    public float ActiveSkillDamageMulitplier
-    {
-        get { return _ActiveSkillDamageMulitplier; }
-    }
-
-    [SerializeField][Min(0f)][Tooltip("In seconds, for non-buff")] protected float _ActiveSkillDuration;
-    public float ActiveSkillDuration
-    {
-        get { return _ActiveSkillDuration; }
-    }
-
-    [SerializeField][Min(0f)][Tooltip("In seconds")] protected float _ActiveSkillCooldown;
-    public float ActiveSkillCooldown
-    {
-        get { return _ActiveSkillCooldown; }
-    }
-
-    [SerializeField] protected string _ActiveBuffString = "";
-    [SerializeField] protected string _UpperBuffString = "";
-    [SerializeField] protected string _LowerBuffString = "";
 
     public string GetBuffString(WeaponSlot slot)
     {
-        // TODO: change active/head buff, dont forget to change it in WeaponBase as well
-        switch (slot)
+        int index = (int)slot;
+        if (index < 0 || index >= _SlotPassiveBuffs.Length)
         {
-            case WeaponSlot.Head:
-                return _ActiveBuffString;
-            case WeaponSlot.UpperBody:
-                return _UpperBuffString;
-            case WeaponSlot.LowerBody:
-                return _LowerBuffString;
-            default:
-                return null;
+            Debug.LogError("WeaponBaseData.GetBuffString: slot out of range");
+            return null;
         }
+        return _SlotPassiveBuffs[index];
+    }
+
+    public string GetActiveBuff()
+    {
+        return _ActiveBuff;
+    }
+
+    public string GetSlotPassiveBuff(WeaponSlot slot)
+    {
+        var index = (int)slot;
+        if (index < 0 || index >= _SlotPassiveBuffs.Length)
+        {
+            Debug.LogError("WeaponBaseData.GetSlotPassiveBuff: slot out of range");
+            return null;
+        }
+        return _SlotPassiveBuffs[index];
+    }
+
+    public void FillBattleDataGap()
+    {
+        FunctionLibrary.FillZeroMemberFields(_Data);
+    }
+}
+
+[System.Serializable]
+public class WeaponBattleData
+{
+    public int Damage;
+    [Min(0)] public int Amount;
+    [Min(0f)] public float Size;
+    [Min(0f)] public float Duration;
+    [Min(0f)] public float Frequency;
+    [Min(0f)] public float Speed;
+    public float KnockbackForce;
+    [Min(0f)] public float ActiveSkillDamageMulitplier;
+    [Min(0f)] public float ActiveSkillDuration;
+    [Min(0f)] public float ActiveSkillCooldown;
+}
+
+[CustomEditor(typeof(WeaponBaseData))]
+public class FillWeaponBattleDataButton : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        WeaponBaseData weaponData = (WeaponBaseData)target;
+
+        GUILayout.BeginVertical();
+        if (GUILayout.Button("Automatically fill Data that is 0"))
+        {
+            weaponData.FillBattleDataGap();
+        }
+        GUILayout.EndVertical();
+        serializedObject.ApplyModifiedProperties();
     }
 }

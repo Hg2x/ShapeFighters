@@ -7,13 +7,6 @@ public class WeaponCylinder : WeaponBase
 
     // TODO: scaling multipliers and more cylinder spawns as level goes up
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _ActiveSkill = MulticastAttack();
-    }
-
     protected override void ArmSkill()
     {
         var tempAmount = 3; // TODO: change to _WeaponAmount later
@@ -30,11 +23,17 @@ public class WeaponCylinder : WeaponBase
             cylinder.TryGetComponent(out CylinderWeaponComponent cylinderComponent);
             if (cylinderComponent != null)
             {
-                cylinderComponent.SetKnockbackForce(_KnockbackForce);
-                cylinderComponent.SetVerticalSpeed(_Speed);
-                cylinderComponent.SetDuration(_Duration);
+                cylinderComponent.SetKnockbackForce(_BattleData.KnockbackForce);
+                cylinderComponent.SetVerticalSpeed(_BattleData.Speed);
+                cylinderComponent.SetDuration(_BattleData.Duration);
             }
         }
+    }
+
+    public override void LoadWeaponData(string weaponDataString)
+    {
+        base.LoadWeaponData(weaponDataString);
+        _ActiveSkill = MulticastAttack();
     }
 
     protected IEnumerator MulticastAttack()
@@ -45,7 +44,7 @@ public class WeaponCylinder : WeaponBase
         }
         _IsLocked = true;
 
-        yield return new WaitForSeconds(_ActiveSkillDuration);
+        yield return new WaitForSeconds(_BattleData.ActiveSkillDuration);
 
         for (int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
         {

@@ -13,13 +13,113 @@ MonoBehaviour:
   m_Name: CylinderData
   m_EditorClassIdentifier: 
   _WeaponID: 4
-  _BaseDamage: 10
-  _AttackDuration: 2
-  _BaseAttackSpeed: 1
-  _Speed: 1
-  _KnockbackForce: 0
-  _ActiveSkillDuration: 5
-  _ActiveSkillCooldown: 90
+  _Data:
+  - Damage: 7
+    Amount: 1
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 12
+    Amount: 2
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 13
+    Amount: 2
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 16
+    Amount: 3
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 17
+    Amount: 3
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 18
+    Amount: 4
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 19
+    Amount: 4
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 20
+    Amount: 5
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
+  - Damage: 22
+    Amount: 6
+    Size: 1
+    Duration: 2
+    Frequency: 1
+    Speed: 1
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 5
+    ActiveSkillCooldown: 90
   _ActiveBuffString: 
   _UpperBuffString: CylinderBodyBuff.asset
   _LowerBuffString: 
+  _ActiveBuff: 
+  _SlotPassiveBuffs:
+  - 
+  - CylinderBodyBuff.asset
+  - 
+  - 

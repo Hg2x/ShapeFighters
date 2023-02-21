@@ -7,13 +7,6 @@ public class WeaponCone : WeaponBase
 
     // TODO: scaling multipliers and faster cone spawns as level goes up
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _ActiveSkill = ChargedAttack();
-    }
-
     protected override void ArmSkill() 
     {
         SpawnConeProjectile();
@@ -30,7 +23,7 @@ public class WeaponCone : WeaponBase
         cone.TryGetComponent(out WeaponComponent component);
         if (component != null)
         {
-            component.SetKnockbackForce(_KnockbackForce);
+            component.SetKnockbackForce(_BattleData.KnockbackForce);
             if (extraDamageMultiplier > 1f)
             {
                 component.SetExtraDamageMultiplier(extraDamageMultiplier);
@@ -41,9 +34,15 @@ public class WeaponCone : WeaponBase
         if (rb != null)
         {
             cone.gameObject.SetActive(true);
-            rb.AddRelativeForce(new Vector3(0, _Speed, 0));
+            rb.AddRelativeForce(new Vector3(0, _BattleData.Speed, 0));
         }
-        Destroy(cone, _Duration);
+        Destroy(cone, _BattleData.Duration);
+    }
+
+    public override void LoadWeaponData(string weaponDataString)
+    {
+        base.LoadWeaponData(weaponDataString);
+        _ActiveSkill = ChargedAttack();
     }
 
     protected IEnumerator ChargedAttack()
@@ -51,9 +50,9 @@ public class WeaponCone : WeaponBase
         GameInstance.GetWeaponManager().ToggleArmAttack(false);
         _IsLocked = true;
 
-        yield return new WaitForSeconds(_ActiveSkillDuration);
+        yield return new WaitForSeconds(_BattleData.ActiveSkillDuration);
 
-        SpawnConeProjectile(_ActiveSkillDamageMulitplier);
+        SpawnConeProjectile(_BattleData.ActiveSkillDamageMulitplier);
         GameInstance.GetWeaponManager().ToggleArmAttack(true);
         _IsLocked = false;
     }

@@ -3,54 +3,41 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
-    // Weapon Data Values, maybe move them to WeaponData?
     protected int _WeaponID;
-    protected int _BaseDamage;
-    protected float _Duration;
-    protected float _BaseAttackSpeed;
-    protected float _Speed;
-    protected float _KnockbackForce;
-    protected float _ActiveSkillDamageMulitplier; // may not be used in all weapons
-    protected float _ActiveSkillDuration; // may not be used in all weapons
-    protected float _ActiveSkillCooldown;
-
     protected int _WeaponLevel;
+    protected WeaponBaseData _WeaponData;
+    protected WeaponBattleData _BattleData;
+
     protected WeaponSlot _CurrentSlot = WeaponSlot.None;
-    
     protected float _ActiveSkillCooldownLeft;
     protected bool _CanUseActiveSkill = false;
     protected float _FinalAttackSpeed;
     protected bool _IsLocked = false; // TODO: broadcast event for IsLocked
 
     protected IEnumerator _ActiveSkill;
+    private IEnumerator _AttackCoroutine;
+
     protected BuffBase _ActiveSkillBuff;
     protected BuffBase _UpperBodyBuff;
     protected BuffBase _LowerBodyBuff;
-    protected WeaponBaseData _WeaponData;
 
-    private IEnumerator _AttackCoroutine;
+    protected PlayerUnit _Player;
 
     // TODO:
     // double check buff system
     // double check weapons
     // implement weapon upgrades
+    // camera movement when using active skill
+    // vfx to show active skill is on
+    // color for all untis and weapons, maybe some texture
+    // toon edge shaders for all objects
 
     // head = active skill
     // body = strong buff passive
     // arm = attack
     // lower body = movement related
 
-    protected PlayerUnit _Player;
 
-    protected virtual void Awake()
-    {
-        _WeaponLevel = 1;
-    }
-
-    protected virtual void Start()
-    {
-        
-    }
 
     protected void Update()
     {
@@ -71,17 +58,9 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         _WeaponID = _WeaponData.WeaponID;
-        _BaseDamage = _WeaponData.BaseDamage;
-        _Duration = _WeaponData.AttackDuration;
-        _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
-        _Speed = _WeaponData.Speed;
-        _KnockbackForce = _WeaponData.KnockbackForce;
-        _ActiveSkillDamageMulitplier = _WeaponData.ActiveSkillDamageMulitplier;
-        _ActiveSkillDuration = _WeaponData.ActiveSkillDuration;
-        _ActiveSkillCooldown = _WeaponData.ActiveSkillCooldown;
-        _BaseAttackSpeed = _WeaponData.BaseAttackSpeed;
+        _BattleData = _WeaponData.GetWeaponBattleData(_WeaponLevel);
         // may want to not use addresables for these?
-        _ActiveSkillBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.Head));
+        _ActiveSkillBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetActiveBuff());
         _UpperBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.UpperBody));
         _LowerBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.LowerBody));
     }
@@ -132,6 +111,17 @@ public abstract class WeaponBase : MonoBehaviour
     public bool GetIsLocked()
     {
         return _IsLocked;
+    }
+
+    public void LevelUp()
+    {
+        if (_WeaponLevel < Const.MAX_WEAPON_LEVEL)
+        {
+            _WeaponLevel++;
+            //Deactivate();
+            _BattleData = _WeaponData.GetWeaponBattleData(_WeaponLevel);
+            //Activate();
+        }
     }
 
     private void UseSkill()
@@ -225,14 +215,14 @@ public abstract class WeaponBase : MonoBehaviour
     protected virtual int CalculateOutgoingDamage(float extraDmgMultiplier = 1f)
     {
         var atkMod = GameInstance.GetLevelManager().PlayerStatusData.AttackModifier;
-        return (int)(_BaseDamage * atkMod * extraDmgMultiplier) ;
+        return (int)(_BattleData.Damage * atkMod * extraDmgMultiplier) ;
     }
 
     public virtual void UseActiveSkill() 
     {
         if (CanUseActiveSkill())
         {
-            _ActiveSkillCooldownLeft = _ActiveSkillCooldown;
+            _ActiveSkillCooldownLeft = _BattleData.ActiveSkillCooldown;
             if (_ActiveSkillBuff != null)
             {
                 StartCoroutine(_ActiveSkillBuff.ApplyBuff());
@@ -293,7 +283,7 @@ public abstract class WeaponBase : MonoBehaviour
         while (true)
         {
             ArmSkill();
-            _FinalAttackSpeed = _BaseAttackSpeed * GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier;
+            _FinalAttackSpeed = _BattleData.Frequency * GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier;
             if (_FinalAttackSpeed <= 0f)
             {
                 Debug.LogError("FinalAttackSpeed cannot be 0 or less");

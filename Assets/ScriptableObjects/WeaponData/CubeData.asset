@@ -13,13 +13,113 @@ MonoBehaviour:
   m_Name: CubeData
   m_EditorClassIdentifier: 
   _WeaponID: 2
-  _BaseDamage: 10
-  _AttackDuration: 0.5
-  _BaseAttackSpeed: 1
-  _Speed: 10
-  _KnockbackForce: 5
-  _ActiveSkillDuration: 0
-  _ActiveSkillCooldown: 60
+  _Data:
+  - Damage: 4
+    Amount: 1
+    Size: 1
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 6
+    Amount: 1
+    Size: 1.1
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 8
+    Amount: 1
+    Size: 1.2
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 10
+    Amount: 2
+    Size: 1.3
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 6.5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 12
+    Amount: 2
+    Size: 1.4
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 6.5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 14
+    Amount: 2
+    Size: 1.5
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 6.5
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 16
+    Amount: 3
+    Size: 1.6
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 8
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 18
+    Amount: 3
+    Size: 1.7
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 8
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 20
+    Amount: 3
+    Size: 1.8
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 8
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 20
+    Amount: 4
+    Size: 2
+    Duration: 0.5
+    Frequency: 1
+    Speed: 5
+    KnockbackForce: 10
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
   _ActiveBuffString: CubeHeadBuff.asset
   _UpperBuffString: CubeBodyBuff.asset
   _LowerBuffString: CubeLowerBodyBuff.asset
+  _ActiveBuff: 
+  _SlotPassiveBuffs:
+  - CubeHeadBuff.asset
+  - CubeBodyBuff.asset
+  - CubeLowerBodyBuff.asset
+  - 

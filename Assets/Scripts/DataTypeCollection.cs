@@ -1,6 +1,7 @@
 public static class Const
 {
     public const int MAX_WEAPON_SLOT = 4;
+    public const int MAX_WEAPON_LEVEL = 10;
     public const int SURVIVAL_TIME_GOAL = 30;
     public const int ENEMY_BASE_DAMAGE = 5;
 }

@@ -13,13 +13,113 @@ MonoBehaviour:
   m_Name: SphereData
   m_EditorClassIdentifier: 
   _WeaponID: 1
-  _BaseDamage: 10
-  _AttackDuration: 1
-  _BaseAttackSpeed: 0.5
-  _Speed: 10
-  _KnockbackForce: 0
-  _ActiveSkillDuration: 0
-  _ActiveSkillCooldown: 60
+  _Data:
+  - Damage: 10
+    Amount: 1
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 10
+    Amount: 2
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 11
+    Amount: 3
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 11
+    Amount: 4
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 12
+    Amount: 5
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 12
+    Amount: 6
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 13
+    Amount: 7
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 13
+    Amount: 8
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 14
+    Amount: 9
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
+  - Damage: 15
+    Amount: 10
+    Size: 1
+    Duration: 1
+    Frequency: 0.8
+    Speed: 10
+    KnockbackForce: 0
+    ActiveSkillDamageMulitplier: 0
+    ActiveSkillDuration: 0
+    ActiveSkillCooldown: 60
   _ActiveBuffString: SphereHeadBuff.asset
   _UpperBuffString: SphereBodyBuff.asset
   _LowerBuffString: SphereLowerBodyBuff.asset
+  _ActiveBuff: 
+  _SlotPassiveBuffs:
+  - SphereHeadBuff.asset
+  - SphereBodyBuff.asset
+  - SphereLowerBodyBuff.asset
+  - 
