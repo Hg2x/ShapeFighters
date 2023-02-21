@@ -1,9 +1,5 @@
-using System.Reflection;
 using UnityEngine;
 using UnityEditor;
-using System;
-using Unity.VisualScripting;
-using System.Linq;
 
 [CreateAssetMenu(fileName = "WeaponBaseData", menuName = "ScriptableObject/WeaponData/BaseData", order = 0)]
 public class WeaponBaseData : ScriptableObject

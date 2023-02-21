@@ -59,12 +59,12 @@ public class FunctionLibrary : MonoBehaviour
         return result;
     }
 
-    public static void FillZeroMemberFields<T>(T[] array) // where T ：array
+    public static void FillZeroMemberFields<T>(T[] array)
     {
-        WeaponBattleData tempData = new();
+        T tempData = array[0];
         for (int i = 0; i < array.Length; i++)
         {
-            FieldInfo[] fields = typeof(WeaponBattleData).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields)
             {
                 object currentValue = field.GetValue(array[i]);
