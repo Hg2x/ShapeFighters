@@ -65,6 +65,17 @@ public class LevelManager : MonoBehaviour
         return GameInstance.GetWeaponManager().GivePlayerWeapon(skillID, slot);
     }
 
+    public void PlayerUseActiveSkill()
+    {
+        if (PlayerUnitReference != null)
+        {
+            if (GameInstance.GetWeaponManager().UseActiveSkill())
+            {
+                GameInstance.GetCameraManager().ActiveSkillSequence(10f, 1f); // TODO: remove hardcoded value
+            }
+        }
+    }
+
     public Vector3[] GetRandomDifferentEnemyPositions(int amount)
     {
         if (_EnemySpawner != null)

@@ -29,6 +29,6 @@ public class BattleUI : UIBase
     
     private void UseActiveSkill()
     {
-        GameInstance.GetWeaponManager().UseActiveSkill();
+        GameInstance.GetLevelManager().PlayerUseActiveSkill();
     }
 }

@@ -100,12 +100,15 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    public void UseActiveSkill()
+    public bool UseActiveSkill()
     {
         if (_EquippedWeapons[0] != null)
         {
+            bool returnValue = _EquippedWeapons[0].CanUseActiveSkill();
             _EquippedWeapons[0].UseActiveSkill();
+            return returnValue;
         }
+        return false;
     }
 
     public void ToggleArmAttack(bool doAttack, int index = 3)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
 public delegate void LevelUpDelegate(int level);
@@ -11,6 +12,7 @@ public class PlayerUnit : UnitBase, IDamageable
     public event LevelUpDelegate OnLevelUp;
     public MoveDelegate MoveDelegate;
 
+    protected VisualEffect _ActiveSkillVFX;
     private InputHandler _InputHandler;
 
     protected override void Awake()
@@ -18,6 +20,8 @@ public class PlayerUnit : UnitBase, IDamageable
         base.Awake();
 
         _InputHandler = GameInstance.GetInputHandler();
+        _ActiveSkillVFX = GetComponentInChildren<VisualEffect>();
+        _ActiveSkillVFX.Stop();
     }
 
     protected override void Start()

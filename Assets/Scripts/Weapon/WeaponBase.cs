@@ -27,9 +27,8 @@ public abstract class WeaponBase : MonoBehaviour
     // double check buff system
     // double check weapons
     // implement weapon upgrades
-    // camera movement when using active skill
     // vfx to show active skill is on
-    // color for all untis and weapons, maybe some texture
+    // color for all units and weapons, maybe some texture
     // toon edge shaders for all objects
 
     // head = active skill
@@ -234,7 +233,7 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
 
-    protected bool CanUseActiveSkill()
+    public bool CanUseActiveSkill()
     {
         return _CanUseActiveSkill && _ActiveSkillCooldownLeft <= 0f;
     }

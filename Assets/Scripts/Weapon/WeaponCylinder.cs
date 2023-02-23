@@ -10,22 +10,25 @@ public class WeaponCylinder : WeaponBase
     protected override void ArmSkill()
     {
         var tempAmount = 3; // TODO: change to _WeaponAmount later
-        var enemyPositions = GameInstance.GetLevelManager().GetRandomDifferentEnemyPositions(tempAmount);
-        if (tempAmount > enemyPositions.Length)
+        Vector3[] enemyPositions = GameInstance.GetLevelManager().GetRandomDifferentEnemyPositions(tempAmount);
+        if (enemyPositions?.Length > 0)
         {
-            tempAmount = enemyPositions.Length;
-        }
-
-        for(int i = 0; i < tempAmount; i++)
-        {
-            var location = enemyPositions[i];
-            var cylinder = Instantiate(_CylinderRef, location, Quaternion.identity, transform);
-            cylinder.TryGetComponent(out CylinderWeaponComponent cylinderComponent);
-            if (cylinderComponent != null)
+            if (tempAmount > enemyPositions.Length)
             {
-                cylinderComponent.SetKnockbackForce(_BattleData.KnockbackForce);
-                cylinderComponent.SetVerticalSpeed(_BattleData.Speed);
-                cylinderComponent.SetDuration(_BattleData.Duration);
+                tempAmount = enemyPositions.Length;
+            }
+
+            for (int i = 0; i < tempAmount; i++)
+            {
+                var location = enemyPositions[i];
+                var cylinder = Instantiate(_CylinderRef, location, Quaternion.identity, transform);
+                cylinder.TryGetComponent(out CylinderWeaponComponent cylinderComponent);
+                if (cylinderComponent != null)
+                {
+                    cylinderComponent.SetKnockbackForce(_BattleData.KnockbackForce);
+                    cylinderComponent.SetVerticalSpeed(_BattleData.Speed);
+                    cylinderComponent.SetDuration(_BattleData.Duration);
+                }
             }
         }
     }
