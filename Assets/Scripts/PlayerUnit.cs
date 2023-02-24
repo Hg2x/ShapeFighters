@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -19,7 +20,7 @@ public class PlayerUnit : UnitBase, IDamageable
     {
         base.Awake();
 
-        _InputHandler = GameInstance.GetInputHandler();
+        _InputHandler = ServiceLocator.Get<InputHandler>();
         _ActiveSkillVFX = GetComponentInChildren<VisualEffect>();
         _ActiveSkillVFX.Stop();
     }

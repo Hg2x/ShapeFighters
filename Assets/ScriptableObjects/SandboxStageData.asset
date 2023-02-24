@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff42146a64921c4b9da3dd36a2be7d7, type: 3}
+  m_Name: SandboxStageData
+  m_EditorClassIdentifier: 
+  PlayerUnitReference: {fileID: 5747823436054953650, guid: 52b7f88b387fc9a4ab46d322f4506df7,
+    type: 3}
+  PlayerStatusData: {fileID: 11400000, guid: fb6eadb5235471a4fa1ecf15171ff327, type: 2}
+  _EnemyRef: {fileID: 7987109642305638698, guid: ef74292f49dfb7d4592bd12544eb5202,
+    type: 3}
+  _SpawnArea: {x: 100, y: 1, z: 100}

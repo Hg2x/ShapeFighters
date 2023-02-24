@@ -1,21 +1,38 @@
-using System.Collections;
+using ICKT.ServiceLocator;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+[AutoRegisteredService]
+public class UIManager : MonoBehaviour, IRegisterable
 {
     private static UIManager _Instance;
 
-    [SerializeField] private UIBase _StartingUI;
-    [SerializeField] private UIBase[] _UICollection;
+    private UIBase _StartingUI;
+    private UIBase[] _UICollection;
     private readonly List<UIBase> _CreatedUIList = new();
     private readonly Stack<UIBase> _OpenUIhistory = new();
     private UIBase _CurrentUI;
-    
+
+    public bool IsPersistent()
+    {
+        return true;
+    }
+
     private void Awake()
     {
-        _Instance = this;
+        var data = FunctionLibrary.TryGetAssetSync<UIManagerData>("UIManagerData.asset"); // TODO: remove this hardcode
+        Init(data);
+    }
 
+    private void Init(UIManagerData data)
+    {
+        if (_Instance != null)
+        {
+            Debug.LogError("UI Manager should not Init more than once");
+        }
+        _Instance = this;
+        _StartingUI = data.StartingUI;
+        _UICollection = data.UICollection;
         // TODO: change implementation later
         if (_StartingUI != null)
         {

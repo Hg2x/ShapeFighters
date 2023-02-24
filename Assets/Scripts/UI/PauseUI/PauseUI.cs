@@ -23,11 +23,11 @@ public class PauseUI : UIBase
 
     public void OnRetryButtonCliked()
     {
-        GameInstance.StartSandboxLevel();
+        GameInstance.GetLevelManager().ResetLevel();
     }
 
     public void OnExitButtonClicked() 
     {
-        GameInstance.GoToInitialScene();
+        GameInstance.GetLevelManager().ExitLevel();
     }
 }

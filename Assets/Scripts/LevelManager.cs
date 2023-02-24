@@ -1,20 +1,26 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+[AutoRegisteredService]
+public class LevelManager : MonoBehaviour, IRegisterable
 {
-    [SerializeField] private GameObject _Player;
-    [SerializeField] private EnemySpawner _EnemySpawnerRef;
-
     public PlayerUnit PlayerUnitReference { get; private set; } // TODO: check this later
     public UnitStatusData PlayerStatusData;
     private EnemySpawner _EnemySpawner;
 
-    private void Awake()
+    // TODO: seperate in-battle and out-of-battle logic
+
+    public bool IsPersistent()
     {
-        if (_Player != null)
+        return true;
+    }
+
+    public void LoadLevel(StageData data)
+    {
+        if (data.PlayerUnitReference != null)
         {
-            PlayerUnitReference = Instantiate(_Player).GetComponent<PlayerUnit>();
-            PlayerUnitReference.OnUnitDied += OnPlayerDied;
+            PlayerUnitReference = Instantiate(data.PlayerUnitReference).GetComponent<PlayerUnit>();
+            PlayerUnitReference.OnUnitDied += OnPlayerDied; // TODO: unsubscribe
             PlayerUnitReference.OnLevelUp += OnPlayerLevelUp;
         }
         else
@@ -22,10 +28,37 @@ public class LevelManager : MonoBehaviour
             Debug.LogError($"Place player and enemy reference in LevelManager");
         }
 
+        PlayerStatusData = data.PlayerStatusData;
+
         if (_EnemySpawner == null)
         {
-            _EnemySpawner = Instantiate(_EnemySpawnerRef);
+            GameObject go = new("EnemySpawner");
+            _EnemySpawner = go.AddComponent<EnemySpawner>();
         }
+        _EnemySpawner.Init(data);
+
+        PlayerUnitReference.gameObject.SetActive(true);
+        ServiceLocator.Get<CameraManager>().SetCameraTarget(PlayerUnitReference.gameObject);
+        StartEnemySpawn();
+    }
+
+    public void ResetLevel()
+    {
+        // if in battle
+        GameInstance.StartSandboxLevel();
+        _EnemySpawner.ResetSpawner();
+    }
+
+    public void ExitLevel()
+    {
+        // if in battle
+        if (_EnemySpawner != null)
+        {
+            Destroy(_EnemySpawner.gameObject);
+            _EnemySpawner = null;
+        }
+        // TODO: unsubscribe stuff and clear stuff
+        GameInstance.GoToInitialScene();
     }
 
     public void GivePlayerExp(int expAmount)
@@ -37,26 +70,6 @@ public class LevelManager : MonoBehaviour
                 player.GainExp(expAmount);
             }
         }
-    }
-
-    public void StartSandboxLevel()
-    {
-        // and some other checks
-        if (PlayerUnitReference == null)
-        {
-            Debug.LogError("Failed StartLevel() check in LevelManager");
-            return;
-        }
-
-        PlayerUnitReference.gameObject.SetActive(true);
-        GameInstance.GetCameraManager().SetCameraTarget(PlayerUnitReference.gameObject);
-        StartEnemySpawn();
-    }
-
-    public void ResetLevel()
-    {
-        // TODO: either make use this or delete if reset by reloading scene
-        _EnemySpawner.ResetSpawner();
     }
 
     public bool GivePlayerSkill(int skillID, WeaponSlot slot = WeaponSlot.None)
@@ -71,7 +84,7 @@ public class LevelManager : MonoBehaviour
         {
             if (GameInstance.GetWeaponManager().UseActiveSkill())
             {
-                GameInstance.GetCameraManager().ActiveSkillSequence(10f, 1f); // TODO: remove hardcoded value
+                ServiceLocator.Get<CameraManager>().ActiveSkillSequence(10f, 1f); // TODO: remove hardcoded value
             }
         }
     }

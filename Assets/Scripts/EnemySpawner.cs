@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private EnemyUnit _TestEnemyRef;
-    [SerializeField] private Vector3 _SpawnArea = new(5, 1, 5);
+    private EnemyUnit _TestEnemyRef;
+    private Vector3 _SpawnArea;
 
     private const float _WaitTime = 3f;
     private float _CachedTime = 0f;
@@ -13,13 +13,13 @@ public class EnemySpawner : MonoBehaviour
 
     private readonly Queue<EnemyUnit> _EnemyPool = new();
     private readonly List<EnemyUnit> _EnemyAlive = new();
-    private Transform _PlayerTransform;
 
     private int LatestSpawnIndex = 0;
 
-    private void Start()
+    public void Init(StageData data)
     {
-        _PlayerTransform = GameInstance.GetLevelManager().PlayerUnitReference.transform;
+        _TestEnemyRef = data._EnemyRef;
+        _SpawnArea = data._SpawnArea;
     }
 
     private void Update()
@@ -38,6 +38,7 @@ public class EnemySpawner : MonoBehaviour
 
     public void StartSpawner()
     {
+        // TODO: add if init
         _NextSpawnTime = Time.time + _WaitTime;
         _ShouldSpawn = true;
     }
@@ -50,9 +51,24 @@ public class EnemySpawner : MonoBehaviour
     public void ResetSpawner()
     {
         _CachedTime = 0f;
+        ClearEnemyPool();
         StartSpawner();
-        // TODO: clear pool and queue
         LatestSpawnIndex = 0;
+    }
+
+    public void ClearEnemyPool()
+    {
+        foreach (var enemy in _EnemyPool)
+        {
+            Destroy(enemy.gameObject);
+        }
+        _EnemyPool.Clear();
+
+        foreach (var enemy in _EnemyAlive)
+        {
+            Destroy(enemy.gameObject);
+        }
+        _EnemyAlive.Clear();
     }
 
     public Vector3[] GetRandomDifferentEnemyPositions(int amount)
@@ -95,7 +111,7 @@ public class EnemySpawner : MonoBehaviour
 
             var enemy = GetEnemyFromPool();
             enemy.transform.position = spawnPosition;
-            enemy.SetTargetPlayer(_PlayerTransform);
+            enemy.SetTargetPlayer(GameInstance.GetLevelManager().PlayerUnitReference.transform); // TODO: change this 
             enemy.gameObject.SetActive(true);
         }
     }
@@ -105,7 +121,7 @@ public class EnemySpawner : MonoBehaviour
         EnemyUnit enemy;
         if (_EnemyPool.Count == 0)
         {
-            enemy = Instantiate(_TestEnemyRef, transform);
+            enemy = Instantiate(_TestEnemyRef);
             enemy.SetSpawnIndex(LatestSpawnIndex);
             LatestSpawnIndex++;
             enemy.OnUnitDied += ReturnToPool;

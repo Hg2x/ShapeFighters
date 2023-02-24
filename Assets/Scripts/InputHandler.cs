@@ -1,12 +1,19 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputHandler : MonoBehaviour
+[AutoRegisteredService]
+public class InputHandler : MonoBehaviour, IRegisterable
 {
     private PlayerInputControl _PlayerInputControl;
 
     public Vector2 InputMoveVector { get { return _InputMoveVector; } }
     private Vector2 _InputMoveVector;
+
+    public bool IsPersistent()
+    {
+        return true;
+    }
 
     private void OnEnable()
     {

@@ -2,14 +2,19 @@ using Cinemachine;
 using UnityEngine;
 using DG.Tweening;
 using System;
-using DG.Tweening.Core.Easing;
+using ICKT.ServiceLocator;
 
+[AutoRegisteredService]
 [RequireComponent(typeof(CinemachineVirtualCamera))]
-public class CameraManager : MonoBehaviour
+public class CameraManager : MonoBehaviour, IRegisterable
 {
     private CinemachineVirtualCamera _VirtualCamera;
     private CinemachineTransposer _Transposer;
 
+    public bool IsPersistent()
+    {
+        return true;
+    }
     private void Awake()
     {
         _VirtualCamera = GetComponent<CinemachineVirtualCamera>();
@@ -19,22 +24,29 @@ public class CameraManager : MonoBehaviour
     {
         if (target != null)
         {
-            if (_VirtualCamera != null)
+            if (_VirtualCamera == null)
             {
-                _VirtualCamera.LookAt = target.transform;
-                _VirtualCamera.Follow = target.transform;
+                _VirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             }
+            _VirtualCamera.LookAt = target.transform;
+            _VirtualCamera.Follow = target.transform;
         }
 
-        InitCameraConfigTest();
+        InitCameraConfig();
     }
 
-    private void InitCameraConfigTest()
+    private void InitCameraConfig()
     {
+        // TODO: data-driven config changes during runtime
         if (_VirtualCamera != null)
         {
-            //_VirtualCamera.m_Lens.FieldOfView = 90f;
-            _Transposer = _VirtualCamera.AddCinemachineComponent<CinemachineTransposer>();
+            _VirtualCamera.m_Lens.FieldOfView = 60f;
+            _VirtualCamera.m_Lens.NearClipPlane = 0.3f;
+            _VirtualCamera.m_Lens.FarClipPlane = 1000f;
+            if (_Transposer == null)
+            {
+                _Transposer = _VirtualCamera.AddCinemachineComponent<CinemachineTransposer>();
+            }
             _Transposer.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetOnAssign;
             _Transposer.m_FollowOffset = new Vector3(0f, 20f, -10f);
             _Transposer.m_XDamping = 0f;

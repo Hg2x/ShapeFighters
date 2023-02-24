@@ -1,30 +1,18 @@
+using ICKT.ServiceLocator;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public delegate void StartSceneDelegate();
-
 public class GameInstance : MonoBehaviour
 {
     private static GameInstance _Instance;
+    // ServiceLocator is initialized after GameInstance Awake()
 
-    public static LevelManager GetLevelManager() { return _Instance._LevelManager; }
-    [SerializeField] private GameObject _LevelManagerGO;
-    private LevelManager _LevelManager;
-    
-    public static CameraManager GetCameraManager() { return _Instance._CameraManager; }
-    [SerializeField] private GameObject _CameraManagerGO;
-    private CameraManager _CameraManager;
+    public static LevelManager GetLevelManager() { return ServiceLocator.Get<LevelManager>(); }
+    public static WeaponManager GetWeaponManager() { return ServiceLocator.Get<WeaponManager>(); }
 
-    public static WeaponManager GetWeaponManager() { return _Instance._WeaponManager; }
-    [SerializeField] private GameObject _WeaponManagerGO;
-    private WeaponManager _WeaponManager;
-
-    [SerializeField] private GameObject _UIManagerGO;
-    private UIManager _UIManager;
-
-    public static InputHandler GetInputHandler() { return _Instance._InputHandler; }
-    private InputHandler _InputHandler;
+    [SerializeField] private StageData _SandboxStageData;
 
     private void Awake()
     {
@@ -39,24 +27,17 @@ public class GameInstance : MonoBehaviour
             _Instance = this;
             DontDestroyOnLoad(_Instance);
         }
-
-        if (_UIManager == null)
-        {
-            _UIManager = Instantiate(_UIManagerGO).GetComponent<UIManager>();
-            _UIManager.gameObject.transform.SetParent(gameObject.transform);
-        }
-
-        if (_InputHandler == null)
-        {
-            _InputHandler = gameObject.AddComponent<InputHandler>();
-            _UIManager.gameObject.transform.SetParent(gameObject.transform);
-        }
     }
 
     public static void StartSandboxLevel()
     {
-        StartSceneDelegate callback = LoadSandboxLevel;
-        _Instance.StartCoroutine(LoadSceneAsync("SandboxScene", callback));
+        static void Callback()
+        {
+            GetLevelManager().LoadLevel(_Instance._SandboxStageData);
+            UIManager.ClearAllUI();
+            UIManager.Show<BattleUI>();
+        }
+        _Instance.StartCoroutine(LoadSceneAsync("SandboxScene", Callback));
     }
 
     public static void GoToInitialScene()
@@ -79,7 +60,7 @@ public class GameInstance : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private static IEnumerator LoadSceneAsync(string sceneName, StartSceneDelegate callback)
+    private static IEnumerator LoadSceneAsync(string sceneName, Action callback)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         while (!asyncLoad.isDone)
@@ -88,27 +69,5 @@ public class GameInstance : MonoBehaviour
         }
 
         callback();
-    }
-
-    private static void LoadSandboxLevel()
-    {
-        if (_Instance._WeaponManager == null)
-        {
-            _Instance._WeaponManager = Instantiate(_Instance._WeaponManagerGO).GetComponent<WeaponManager>();
-        }
-
-        if (_Instance._LevelManager == null)
-        {
-            _Instance._LevelManager = Instantiate(_Instance._LevelManagerGO).GetComponent<LevelManager>();
-        }
-
-        if (_Instance._CameraManager == null)
-        {
-            _Instance._CameraManager = Instantiate(_Instance._CameraManagerGO).GetComponent<CameraManager>();
-        }
-
-        _Instance._LevelManager.GetComponent<LevelManager>().StartSandboxLevel();
-        UIManager.ClearAllUI();
-        UIManager.Show<BattleUI>();
     }
 }

@@ -1,16 +1,24 @@
+using ICKT.ServiceLocator;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public delegate void WeaponSwitchedDelegate(int firstSlotIndex, int secondSlotIndex);
 
-public class WeaponManager : MonoBehaviour
+[AutoRegisteredService]
+public class WeaponManager : MonoBehaviour, IRegisterable
 {
     public event WeaponSwitchedDelegate OnWeaponSwitched;
 
     private readonly Dictionary<int, WeaponBase> _WeaponDictionary = new();
     private readonly Dictionary<int, string> _IDStringDictionary = new();
     private readonly WeaponBase[] _EquippedWeapons = new WeaponBase[Const.MAX_WEAPON_SLOT]; // 0 = head, 1 = upper body, 2 = lower body, 3 = arm
+
+    // TODO: seperate in-battle and out-of-battle logic
+
+    public bool IsPersistent()
+    {
+        return true;
+    }
 
     private void Awake()
     {
@@ -152,7 +160,7 @@ public class WeaponManager : MonoBehaviour
     {
         if (_EquippedWeapons[index] != null)
         {
-            _EquippedWeapons[index].SetPlayerReference(GameInstance.GetLevelManager().PlayerUnitReference); // TODO: maybe change name
+            _EquippedWeapons[index].SetPlayerReference(ServiceLocator.Get<LevelManager>().PlayerUnitReference); // TODO: maybe change name
             _EquippedWeapons[index].ChangeSlot((WeaponSlot)index);
             _EquippedWeapons[index].Activate();
             return true;
