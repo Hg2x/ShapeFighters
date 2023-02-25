@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using System.Collections;
 using UnityEngine;
 
@@ -21,7 +22,8 @@ public abstract class WeaponBase : MonoBehaviour
     protected BuffBase _UpperBodyBuff;
     protected BuffBase _LowerBodyBuff;
 
-    protected PlayerUnit _Player;
+    protected Transform _PlayerTransform;
+    protected PlayerStatusData _PlayerStatusData;
 
     // TODO:
     // double check buff system
@@ -62,13 +64,15 @@ public abstract class WeaponBase : MonoBehaviour
         _ActiveSkillBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetActiveBuff());
         _UpperBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.UpperBody));
         _LowerBodyBuff = FunctionLibrary.TryGetAssetSync<BuffBase>(_WeaponData.GetBuffString(WeaponSlot.LowerBody));
+
+        _PlayerStatusData = ServiceLocator.Get<LevelManager>().PlayerStatusData;
     }
 
-    public virtual void SetPlayerReference(PlayerUnit player)
+    public virtual void SetPlayerTransform(Transform playerTransform)
     {
-        if (player != null)
+        if (playerTransform != null)
         {
-            _Player = player;
+            _PlayerTransform = playerTransform;
         }
         else
         {
@@ -213,7 +217,7 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual int CalculateOutgoingDamage(float extraDmgMultiplier = 1f)
     {
-        var atkMod = GameInstance.GetLevelManager().PlayerStatusData.AttackModifier;
+        var atkMod = _PlayerStatusData.AttackModifier;
         return (int)(_BattleData.Damage * atkMod * extraDmgMultiplier) ;
     }
 
@@ -282,7 +286,7 @@ public abstract class WeaponBase : MonoBehaviour
         while (true)
         {
             ArmSkill();
-            _FinalAttackSpeed = _BattleData.Frequency * GameInstance.GetLevelManager().PlayerStatusData.AttackSpeedModifier;
+            _FinalAttackSpeed = _BattleData.Frequency * _PlayerStatusData.AttackSpeedModifier;
             if (_FinalAttackSpeed <= 0f)
             {
                 Debug.LogError("FinalAttackSpeed cannot be 0 or less");

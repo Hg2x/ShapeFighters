@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using System.Collections;
 using UnityEngine;
 
@@ -14,9 +15,8 @@ public class WeaponCone : WeaponBase
 
     protected void SpawnConeProjectile(float extraDamageMultiplier = 1f)
     {
-        var curDirection = _Player.GetComponent<UnitBase>().CurrentDirection;
-        var position = _Player.transform.localPosition + Vector3.Scale(curDirection, new Vector3(3f, 0.5f, 3f));
-        var rotation = Quaternion.Euler(new Vector3(curDirection.z * 90f, 0.5f, curDirection.x * -90f));
+        var position = _PlayerTransform.localPosition + Vector3.Scale(_PlayerTransform.forward, new Vector3(3f, 0.5f, 3f));
+        var rotation = Quaternion.Euler(new Vector3(90f, 0f, -_PlayerTransform.rotation.eulerAngles.y));
 
         var cone = Instantiate(_ConeRef, position, rotation, transform);
         cone.gameObject.SetActive(false);
@@ -29,7 +29,7 @@ public class WeaponCone : WeaponBase
                 component.SetExtraDamageMultiplier(extraDamageMultiplier);
             }
         }
-        
+
         cone.TryGetComponent(out Rigidbody rb);
         if (rb != null)
         {
@@ -47,13 +47,15 @@ public class WeaponCone : WeaponBase
 
     protected IEnumerator ChargedAttack()
     {
-        GameInstance.GetWeaponManager().ToggleArmAttack(false);
+        var weaponManager = ServiceLocator.Get<WeaponManager>();
+
+        weaponManager.ToggleArmAttack(false);
         _IsLocked = true;
 
         yield return new WaitForSeconds(_BattleData.ActiveSkillDuration);
 
         SpawnConeProjectile(_BattleData.ActiveSkillDamageMulitplier);
-        GameInstance.GetWeaponManager().ToggleArmAttack(true);
+        weaponManager.ToggleArmAttack(true);
         _IsLocked = false;
     }
 }

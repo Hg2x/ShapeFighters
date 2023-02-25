@@ -27,7 +27,7 @@ public class WeaponManager : MonoBehaviour, IRegisterable
 
     private void Init()
     {
-        var dictionary = FunctionLibrary.TryGetAssetSync<IDStringDictionary>("WeaponIDDictionary.asset");
+        var dictionary = FunctionLibrary.TryGetAssetSync<IntStringDictionary>("WeaponIDDictionary.asset"); // TODO: remove hardcode
         foreach (var pair in dictionary)
         {
             if (FunctionLibrary.TryGetAssetSync<GameObject>("Weapon" + pair.Value + ".prefab").TryGetComponent(out WeaponBase weapon))
@@ -36,6 +36,15 @@ public class WeaponManager : MonoBehaviour, IRegisterable
                 _IDStringDictionary.Add(pair.Key, pair.Value);
             }
         }
+    }
+
+    public string GetWeaponName(int weaponID)
+    {
+        if (_IDStringDictionary.ContainsKey(weaponID))
+        {
+            return _IDStringDictionary[weaponID];
+        }
+        return "None";
     }
 
     public int[] GetEquippedWeaponID()
@@ -160,7 +169,7 @@ public class WeaponManager : MonoBehaviour, IRegisterable
     {
         if (_EquippedWeapons[index] != null)
         {
-            _EquippedWeapons[index].SetPlayerReference(ServiceLocator.Get<LevelManager>().PlayerUnitReference); // TODO: maybe change name
+            _EquippedWeapons[index].SetPlayerTransform(ServiceLocator.Get<LevelManager>().PlayerTransform);
             _EquippedWeapons[index].ChangeSlot((WeaponSlot)index);
             _EquippedWeapons[index].Activate();
             return true;

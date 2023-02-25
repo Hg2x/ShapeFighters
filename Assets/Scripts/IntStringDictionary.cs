@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "IDStringDictionary", menuName = "ScriptableObject/Dictionary/IDStringDictionary", order = 0)]
-public class IDStringDictionary : ScriptableObject, ISerializationCallbackReceiver, IEnumerable<KeyValuePair<int, string>>, IEnumerable
+[CreateAssetMenu(fileName = "IntStringDictionary", menuName = "ScriptableObject/Dictionary/IDStringDictionary", order = 0)]
+public class IntStringDictionary : ScriptableObject, ISerializationCallbackReceiver, IEnumerable<KeyValuePair<int, string>>, IEnumerable
 {
-    [SerializeField] protected List<int> _ID = new();
-    [SerializeField] protected List<string> _String = new();
-
+    [SerializeField] protected List<int> _Keys = new();
+    [SerializeField] protected List<string> _Values = new();
     protected Dictionary<int, string> _Dictionary = new();
 
     public IReadOnlyDictionary<int, string> GetDictionary()
@@ -25,9 +24,9 @@ public class IDStringDictionary : ScriptableObject, ISerializationCallbackReceiv
     {
         _Dictionary = new Dictionary<int, string>();
 
-        for (int i = 0; i != Math.Min(_ID.Count, _String.Count); i++)
+        for (int i = 0; i != Math.Min(_Keys.Count, _Values.Count); i++)
         {
-            _Dictionary.Add(_ID[i], _String[i]);
+            _Dictionary.Add(_Keys[i], _Values[i]);
         }
     }
 

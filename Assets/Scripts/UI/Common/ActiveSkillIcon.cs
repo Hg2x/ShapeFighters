@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using ICKT.ServiceLocator;
 using TMPro;
 using UnityEngine;
 //using UnityEngine.AddressableAssets;
@@ -20,7 +19,7 @@ public class ActiveSkillIcon : MonoBehaviour
 
     public void Init()
     {
-        var weaponManager = GameInstance.GetWeaponManager();
+        var weaponManager = ServiceLocator.Get<WeaponManager>();
         if (weaponManager != null )
         {
             weaponManager.OnWeaponSwitched += ChangeSkillIcon;
@@ -45,5 +44,10 @@ public class ActiveSkillIcon : MonoBehaviour
         //    var sprite = op.Result;
         //    _Icon.sprite = sprite;
         //};
+    }
+
+    private void OnDestroy()
+    {
+        Button.onClick.RemoveAllListeners();
     }
 }

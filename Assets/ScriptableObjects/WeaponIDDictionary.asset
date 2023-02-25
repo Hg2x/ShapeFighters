@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258ee2e956de07147a52840123a55e18, type: 3}
   m_Name: WeaponIDDictionary
   m_EditorClassIdentifier: 
-  _ID: 01000000020000000300000004000000
-  _String:
+  _Keys: 01000000020000000300000004000000
+  _Values:
   - Sphere
   - Cube
   - Cone

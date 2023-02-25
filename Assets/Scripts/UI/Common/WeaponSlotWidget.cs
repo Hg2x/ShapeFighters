@@ -1,24 +1,28 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 
 public class WeaponSlotWidget : MonoBehaviour
 {
     [SerializeField] private CommonItemIcon[] _WeaponIcons;
+    private WeaponManager _WeaponManager;
     private int _SelectedIndex = -1;
+    
 
     public void Init()
     {
-        int[] weaponID = GameInstance.GetWeaponManager().GetEquippedWeaponID();
+        _WeaponManager = ServiceLocator.Get<WeaponManager>();
+        int[] weaponID = _WeaponManager.GetEquippedWeaponID();
         for(int i = 0; i < _WeaponIcons.Length; i++)
         {
             _WeaponIcons[i].LoadWeaponImage((weaponID[i]));
             var index = i;
-            _WeaponIcons[i].Button.onClick.AddListener(delegate { OnSlotClicked(index); } ); // TODO: check this later
+            _WeaponIcons[i].Button.onClick.AddListener(delegate { OnSlotClicked(index); } );
         }
     }
 
     public void RefreshSlots()
     {
-        int[] weaponID = GameInstance.GetWeaponManager().GetEquippedWeaponID();
+        int[] weaponID = _WeaponManager.GetEquippedWeaponID();
         for (int i = 0; i < _WeaponIcons.Length; i++)
         {
             _WeaponIcons[i].LoadWeaponImage((weaponID[i]));
@@ -37,7 +41,7 @@ public class WeaponSlotWidget : MonoBehaviour
 
     public void SelectNearestEmptySlot()
     {
-        var index = GameInstance.GetWeaponManager().GetEmptySlotIndex();
+        var index = _WeaponManager.GetEmptySlotIndex();
         if (index >= 0)
         {
             foreach (var slot in _WeaponIcons)
@@ -52,7 +56,7 @@ public class WeaponSlotWidget : MonoBehaviour
 
     private void OnSlotClicked(int index)
     {
-        if (GameInstance.GetWeaponManager().GetIsSlotLocked((WeaponSlot)index))
+        if (_WeaponManager.GetIsSlotLocked((WeaponSlot)index))
         {
             return;
         }
@@ -68,10 +72,9 @@ public class WeaponSlotWidget : MonoBehaviour
             {
                 _WeaponIcons[_SelectedIndex].Unselected();
 
-                var weaponManager = GameInstance.GetWeaponManager();
-                int[] weaponID = weaponManager.GetEquippedWeaponID();
+                int[] weaponID = _WeaponManager.GetEquippedWeaponID();
 
-                weaponManager.SwitchWeapon(_SelectedIndex, index);
+                _WeaponManager.SwitchWeapon(_SelectedIndex, index);
                 _WeaponIcons[_SelectedIndex].LoadWeaponImage((weaponID[index]));
                 _WeaponIcons[index].LoadWeaponImage((weaponID[_SelectedIndex]));
             }

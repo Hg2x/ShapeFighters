@@ -4,8 +4,9 @@ using UnityEngine;
 [AutoRegisteredService]
 public class LevelManager : MonoBehaviour, IRegisterable
 {
-    public PlayerUnit PlayerUnitReference { get; private set; } // TODO: check this later
-    public UnitStatusData PlayerStatusData;
+    public PlayerStatusData PlayerStatusData;
+    public Transform PlayerTransform => _PlayerUnitReference.transform;
+    private PlayerUnit _PlayerUnitReference;
     private EnemySpawner _EnemySpawner;
 
     // TODO: seperate in-battle and out-of-battle logic
@@ -19,9 +20,7 @@ public class LevelManager : MonoBehaviour, IRegisterable
     {
         if (data.PlayerUnitReference != null)
         {
-            PlayerUnitReference = Instantiate(data.PlayerUnitReference).GetComponent<PlayerUnit>();
-            PlayerUnitReference.OnUnitDied += OnPlayerDied; // TODO: unsubscribe
-            PlayerUnitReference.OnLevelUp += OnPlayerLevelUp;
+            _PlayerUnitReference = Instantiate(data.PlayerUnitReference).GetComponent<PlayerUnit>();
         }
         else
         {
@@ -29,6 +28,11 @@ public class LevelManager : MonoBehaviour, IRegisterable
         }
 
         PlayerStatusData = data.PlayerStatusData;
+        if (PlayerStatusData != null)
+        {
+            PlayerStatusData.OnZeroHealth += OnPlayerDied;
+            PlayerStatusData.OnLevelUp += OnPlayerLevelUp;
+        }
 
         if (_EnemySpawner == null)
         {
@@ -37,8 +41,8 @@ public class LevelManager : MonoBehaviour, IRegisterable
         }
         _EnemySpawner.Init(data);
 
-        PlayerUnitReference.gameObject.SetActive(true);
-        ServiceLocator.Get<CameraManager>().SetCameraTarget(PlayerUnitReference.gameObject);
+        _PlayerUnitReference.gameObject.SetActive(true);
+        ServiceLocator.Get<CameraManager>().SetCameraTarget(_PlayerUnitReference.gameObject);
         StartEnemySpawn();
     }
 
@@ -57,32 +61,33 @@ public class LevelManager : MonoBehaviour, IRegisterable
             Destroy(_EnemySpawner.gameObject);
             _EnemySpawner = null;
         }
-        // TODO: unsubscribe stuff and clear stuff
+        if (_PlayerUnitReference != null)
+        {
+            Destroy(_PlayerUnitReference.gameObject);
+            _PlayerUnitReference = null;
+        }
         GameInstance.GoToInitialScene();
     }
 
     public void GivePlayerExp(int expAmount)
     {
-        if (PlayerUnitReference != null)
+        if (PlayerStatusData != null)
         {
-            if (PlayerUnitReference.TryGetComponent<PlayerUnit>(out var player))
-            {
-                player.GainExp(expAmount);
-            }
+            PlayerStatusData.GainExp(expAmount);
         }
     }
 
     public bool GivePlayerSkill(int skillID, WeaponSlot slot = WeaponSlot.None)
     {
         // if weapon
-        return GameInstance.GetWeaponManager().GivePlayerWeapon(skillID, slot);
+        return ServiceLocator.Get<WeaponManager>().GivePlayerWeapon(skillID, slot);
     }
 
     public void PlayerUseActiveSkill()
     {
-        if (PlayerUnitReference != null)
+        if (_PlayerUnitReference != null)
         {
-            if (GameInstance.GetWeaponManager().UseActiveSkill())
+            if (ServiceLocator.Get<WeaponManager>().UseActiveSkill())
             {
                 ServiceLocator.Get<CameraManager>().ActiveSkillSequence(10f, 1f); // TODO: remove hardcoded value
             }
@@ -121,9 +126,8 @@ public class LevelManager : MonoBehaviour, IRegisterable
         UIManager.Show<LevelUpUI>();
     }
 
-    private void OnPlayerDied(UnitBase player)
+    private void OnPlayerDied()
     {
-        player.gameObject.SetActive(false);
         UIManager.Show<LevelFailUI>();
         StopEnemySpawn();
     }

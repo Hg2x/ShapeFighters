@@ -9,16 +9,12 @@ public class GameInstance : MonoBehaviour
     private static GameInstance _Instance;
     // ServiceLocator is initialized after GameInstance Awake()
 
-    public static LevelManager GetLevelManager() { return ServiceLocator.Get<LevelManager>(); }
-    public static WeaponManager GetWeaponManager() { return ServiceLocator.Get<WeaponManager>(); }
-
     [SerializeField] private StageData _SandboxStageData;
 
     private void Awake()
     {
         if (_Instance != null)
         {
-            Debug.LogWarning($"Duplicate GameInstance error on {gameObject.name}");
             Destroy(gameObject);
             return;
         }
@@ -33,7 +29,7 @@ public class GameInstance : MonoBehaviour
     {
         static void Callback()
         {
-            GetLevelManager().LoadLevel(_Instance._SandboxStageData);
+            ServiceLocator.Get<LevelManager>().LoadLevel(_Instance._SandboxStageData);
             UIManager.ClearAllUI();
             UIManager.Show<BattleUI>();
         }

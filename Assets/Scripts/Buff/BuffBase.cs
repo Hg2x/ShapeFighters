@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,13 +38,15 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
             yield return null;
         }
 
+        var levelManager = ServiceLocator.Get<LevelManager>();
+
         foreach (var valueMod in _ValueModifiers)
         {
-            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(valueMod.Key, valueMod.Value, "+");
+            levelManager.PlayerStatusData.ModifySetVariable(valueMod.Key, valueMod.Value, "+");
         }
         foreach (var statusMod in _StatusModifiers)
         {
-            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(statusMod, true);
+            levelManager.PlayerStatusData.ModifySetVariable(statusMod, true);
         }
 
         // if stackable, add stacks
@@ -69,13 +72,15 @@ public class BuffBase : ScriptableObject, ISerializationCallbackReceiver
             return;
         }
 
+        var levelManager = ServiceLocator.Get<LevelManager>();
+
         foreach (var valueMod in _ValueModifiers)
         {
-            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(valueMod.Key, -valueMod.Value, "+");
+            levelManager.PlayerStatusData.ModifySetVariable(valueMod.Key, -valueMod.Value, "+");
         }
         foreach (var statusMod in _StatusModifiers)
         {
-            GameInstance.GetLevelManager().PlayerStatusData.ModifySetVariable(statusMod, false);
+            levelManager.PlayerStatusData.ModifySetVariable(statusMod, false);
         }
 
         // if no stacks and IsStackable as well, else remove stacks only

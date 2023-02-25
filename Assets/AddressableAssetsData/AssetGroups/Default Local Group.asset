@@ -89,10 +89,6 @@ MonoBehaviour:
     m_Address: WeaponSphere.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: b138da1dac746634e89b48654ff8bc3f
-    m_Address: WeaponIDDictionary.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: d62daaff7ba127e47a8d62917265092e
     m_Address: CubeData.asset
     m_ReadOnly: 0
@@ -103,6 +99,14 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: bc1889fc8ee275842b4a2bbd27e4baf8
     m_Address: CylinderData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 43f0f7fdf146da141b7f53723c43426f
+    m_Address: UIManagerData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b138da1dac746634e89b48654ff8bc3f
+    m_Address: WeaponIDDictionary.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

@@ -1,8 +1,20 @@
 using UnityEngine;
 
+public delegate void HealthChangedDelegate(int currentHealth, int maxHealth);
+public delegate void ZeroHealthDelegate();
+
+public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
+public delegate void LevelUpDelegate(int level);
+
 [CreateAssetMenu(fileName = "UnitStatusData", menuName = "ScriptableObject/UnitStatusData/Unit", order = 0)]
 public class UnitStatusData : ScriptableObject
 {
+    public event HealthChangedDelegate OnHealthChanged;
+    public event ZeroHealthDelegate OnZeroHealth;
+
+    public event ExpChangedDelegate OnExpChanged;
+    public event LevelUpDelegate OnLevelUp;
+
     [Header("Base Stats, modify these to tweak stats")]
     [SerializeField][Min(0)] protected int _BaseMaxHealth = 100;
     [SerializeField][Min(0f)] protected float _BaseAttack = 1f;
@@ -92,7 +104,6 @@ public class UnitStatusData : ScriptableObject
         }
         _Owner = owner;
         ResetData();
-        // TODO: implement a more scalable and dev-friendly way to fetch stats
     }
 
     public void RefreshData()
@@ -126,27 +137,61 @@ public class UnitStatusData : ScriptableObject
         MaxHealth = _BaseMaxHealth;
     }
 
+    public void TakeDamage(int damageTaken)
+    {
+        if (!IsInvincible)
+        {
+            float dmgFloat = damageTaken;
+            Health -= (int)(dmgFloat / Mathf.Pow(2, DefenseModifer));
+            OnHealthChanged?.Invoke(Health, MaxHealth);
+
+            if (Health <= 0)
+            {
+                Health = 0;
+                OnZeroHealth?.Invoke();
+            }
+        }
+    }
+
+    public void UnsubcribeDelegates()
+    {
+        if (OnHealthChanged != null)
+            foreach (var d in OnHealthChanged.GetInvocationList())
+                OnHealthChanged -= (d as HealthChangedDelegate);
+
+        if (OnZeroHealth != null)
+            foreach (var d in OnZeroHealth.GetInvocationList())
+                OnZeroHealth -= (d as ZeroHealthDelegate);
+
+
+        if (OnExpChanged != null)
+            foreach (var d in OnExpChanged.GetInvocationList())
+                OnExpChanged -= (d as ExpChangedDelegate);
+
+        if (OnLevelUp != null)
+            foreach (var d in OnLevelUp.GetInvocationList())
+                OnLevelUp -= (d as LevelUpDelegate);
+    }
+
     // Player specific below
     private int CalcNextLevelExp()
     {
         return Level * 100;
     }
 
-    public bool GainExp(int expAmount) // return if leveled up, doesnt work when 1x exp gain gains more than 1 level
+    public void GainExp(int expAmount)
     {
         CurrentExp += expAmount;
+        OnExpChanged?.Invoke(CurrentExp, NextLevelExp);
         if (CurrentExp >= NextLevelExp)
         {
             Level++;
             CurrentExp -= NextLevelExp;
             NextLevelExp = CalcNextLevelExp();
             ResetHealth();
-            return true;
+            OnLevelUp?.Invoke(Level);
         }
-        return false;
     }
-
-
 
     //Enemy Specific
     public int GetExpWorth()

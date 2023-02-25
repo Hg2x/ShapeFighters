@@ -17,13 +17,13 @@ MonoBehaviour:
   _BaseAttackSpeed: 1
   _BaseDefense: 0
   _BaseSpeed: 15
-  Health: 1000
+  Health: 700
   MaxHealth: 1000
-  AttackModifier: 1
+  AttackModifier: 2.5
   AttackSpeedModifier: 1
   DefenseModifer: 0
   MoveSpeed: 15
-  Level: 2
+  Level: 5
   IsInvincible: 0
   IsSlippery: 0
   IsImmobile: 0

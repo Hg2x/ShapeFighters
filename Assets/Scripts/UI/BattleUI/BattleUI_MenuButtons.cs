@@ -9,6 +9,6 @@ public class BattleUI_MenuButtons : MonoBehaviour
 
     public void OnToggleUIButtonCLicked()
     {
-        // TODO: implement toggle UI
+        
     }
 }

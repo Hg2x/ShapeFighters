@@ -25,7 +25,7 @@ public class InputHandler : MonoBehaviour, IRegisterable
         _PlayerInputControl.Player.Enable();
         _PlayerInputControl.Player.Move.performed += SetInputMoveVector;
         _PlayerInputControl.Player.Move.canceled += SetInputMoveVector;
-#if DEBUG
+#if UNITY_EDITOR
         _PlayerInputControl.Player.Debug.performed += ShowDebugMenu;
 #endif
     }
@@ -35,7 +35,7 @@ public class InputHandler : MonoBehaviour, IRegisterable
         _PlayerInputControl.Player.Disable();
         _PlayerInputControl.Player.Move.performed -= SetInputMoveVector;
         _PlayerInputControl.Player.Move.canceled -= SetInputMoveVector;
-#if DEBUG
+#if UNITY_EDITOR
         _PlayerInputControl.Player.Debug.performed -= ShowDebugMenu;
 #endif
     }

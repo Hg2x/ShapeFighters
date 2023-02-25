@@ -1,3 +1,5 @@
+using ICKT.ServiceLocator;
+
 public class PauseUI : UIBase
 {
     private void OnEnable()
@@ -23,11 +25,11 @@ public class PauseUI : UIBase
 
     public void OnRetryButtonCliked()
     {
-        GameInstance.GetLevelManager().ResetLevel();
+        ServiceLocator.Get<LevelManager>().ResetLevel();
     }
 
     public void OnExitButtonClicked() 
     {
-        GameInstance.GetLevelManager().ExitLevel();
+        ServiceLocator.Get<LevelManager>().ExitLevel();
     }
 }

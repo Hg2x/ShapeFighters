@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,23 +33,24 @@ public class DebugMenu : UIBase
 
     public void DebugPlayerLevelUp()
     {
-        var levelManager = GameInstance.GetLevelManager();
+        var levelManager = ServiceLocator.Get<LevelManager>();
         levelManager.GivePlayerExp(levelManager.PlayerStatusData.NextLevelExp);
     }
 
     public void DebugTogglePlayerInvincible()
     {
-        GameInstance.GetLevelManager().PlayerStatusData.IsInvincible = !GameInstance.GetLevelManager().PlayerStatusData.IsInvincible;
+        var levelManager = ServiceLocator.Get<LevelManager>();
+        levelManager.PlayerStatusData.IsInvincible = !levelManager.PlayerStatusData.IsInvincible;
     }
 
     public void DebugStartEnemySpawn()
     {
-        GameInstance.GetLevelManager().StartEnemySpawn();
+        ServiceLocator.Get<LevelManager>().StartEnemySpawn();
     }
 
     public void DebugStopEnemySpawn()
     {
-        GameInstance.GetLevelManager().StopEnemySpawn();
+        ServiceLocator.Get<LevelManager>().StopEnemySpawn();
     }
 
     public void Test()

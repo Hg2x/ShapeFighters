@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 
 public class BattleUI : UIBase
@@ -6,7 +7,7 @@ public class BattleUI : UIBase
     [SerializeField] private WeaponSlotWidget _WeaponSlots;
     [SerializeField] private ActiveSkillIcon _ActiveSkillIcon;
 
-    [SerializeField] private UnitStatusData _PlayerStats;
+    [SerializeField] private PlayerStatusData _PlayerStats;
     private bool _DoneInit = false;
 
     private void Start()
@@ -29,6 +30,6 @@ public class BattleUI : UIBase
     
     private void UseActiveSkill()
     {
-        GameInstance.GetLevelManager().PlayerUseActiveSkill();
+        ServiceLocator.Get<LevelManager>().PlayerUseActiveSkill();
     }
 }

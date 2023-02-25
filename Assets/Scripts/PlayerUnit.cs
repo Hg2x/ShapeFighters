@@ -2,17 +2,8 @@ using ICKT.ServiceLocator;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public delegate void ExpChangedDelegate(int currentExp, int NextLevelExp);
-public delegate void LevelUpDelegate(int level);
-
-public delegate void MoveDelegate(Vector3 inputVector);
-
 public class PlayerUnit : UnitBase, IDamageable
 {
-    public event ExpChangedDelegate OnExpChanged;
-    public event LevelUpDelegate OnLevelUp;
-    public MoveDelegate MoveDelegate;
-
     protected VisualEffect _ActiveSkillVFX;
     private InputHandler _InputHandler;
 
@@ -29,7 +20,7 @@ public class PlayerUnit : UnitBase, IDamageable
     {
         base.Start();
 
-        GameInstance.GetWeaponManager().InitPlayerWeapon();
+        ServiceLocator.Get<WeaponManager>().InitPlayerWeapon();
     }
 
     protected override void Update()
@@ -45,16 +36,6 @@ public class PlayerUnit : UnitBase, IDamageable
         if (source != DamageSource.Friendly)
         {
             TakeDamage(damageTaken);
-        }
-    }
-
-    public void GainExp(int expAmount)
-    {
-        var leveledUp = _UnitData.GainExp(expAmount);
-        OnExpChanged?.Invoke(_UnitData.CurrentExp, _UnitData.NextLevelExp);
-        if (leveledUp)
-        {
-            OnLevelUp?.Invoke(_UnitData.Level);
         }
     }
 }

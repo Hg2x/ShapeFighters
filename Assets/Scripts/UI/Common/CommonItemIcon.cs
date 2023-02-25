@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
+using System;
 
 [RequireComponent(typeof(Button))]
 public class CommonItemIcon : MonoBehaviour
@@ -34,5 +35,10 @@ public class CommonItemIcon : MonoBehaviour
             var sprite = op.Result;
             _Icon.sprite = sprite;
         };
+    }
+
+    private void OnDestroy()
+    {
+        Button.onClick.RemoveAllListeners();
     }
 }

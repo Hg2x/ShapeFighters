@@ -1,16 +1,22 @@
+using ICKT.ServiceLocator;
 using System.Collections;
 using UnityEngine;
 
 public class WeaponCylinder : WeaponBase
 {
     [SerializeField] private CylinderWeaponComponent _CylinderRef;
+    protected LevelManager _LevelManager;
 
     // TODO: scaling multipliers and more cylinder spawns as level goes up
 
     protected override void ArmSkill()
     {
         var tempAmount = 3; // TODO: change to _WeaponAmount later
-        Vector3[] enemyPositions = GameInstance.GetLevelManager().GetRandomDifferentEnemyPositions(tempAmount);
+        if (_LevelManager == null)
+        {
+            _LevelManager = ServiceLocator.Get<LevelManager>();
+        }
+        Vector3[] enemyPositions = _LevelManager.GetRandomDifferentEnemyPositions(tempAmount);
         if (enemyPositions?.Length > 0)
         {
             if (tempAmount > enemyPositions.Length)
@@ -41,9 +47,11 @@ public class WeaponCylinder : WeaponBase
 
     protected IEnumerator MulticastAttack()
     {
-        for(int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
+        var weaponManager = ServiceLocator.Get<WeaponManager>();
+
+        for (int i = 0; i < Const.MAX_WEAPON_SLOT; i++)
         {
-            GameInstance.GetWeaponManager().ToggleArmAttack(true, i);
+            weaponManager.ToggleArmAttack(true, i);
         }
         _IsLocked = true;
 
@@ -55,7 +63,7 @@ public class WeaponCylinder : WeaponBase
             {
                 continue;
             }
-            GameInstance.GetWeaponManager().ToggleArmAttack(false, i);
+            weaponManager.ToggleArmAttack(false, i);
         }
         _IsLocked = false;
     }

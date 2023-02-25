@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,7 @@ public class LevelUpUI : UIBase
 
     private void OnSlotClicked(int index)
     {
-        if (GameInstance.GetLevelManager().GivePlayerSkill(_ChoiceID[index], _EquippedSlots.GetSelectedSlot()))
+        if (ServiceLocator.Get<LevelManager>().GivePlayerSkill(_ChoiceID[index], _EquippedSlots.GetSelectedSlot()))
         {
             GameInstance.ResumeGame();
             Close();

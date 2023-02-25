@@ -29,7 +29,7 @@ public class FunctionLibrary : MonoBehaviour
         (obj[index2], obj[index1]) = (obj[index1], obj[index2]);
     }
 
-    public static int[] GetRandomNumbers(int amount, int min, int max, bool allowRepeats = false)
+    public static int[] GetRandomNumbers(int amount, int min, int max, bool allowRepeats = true)
     {
         int[] numbers = new int[max - min + 1];
         for (int i = 0; i < numbers.Length; i++)
@@ -99,22 +99,12 @@ public class FunctionLibrary : MonoBehaviour
     {
         return weaponID > 0 ? "W" + weaponID.ToString() : "None";
     }
-
-    public static string GetWeaponName(int weaponID) // TODO: implement a better way to get weapon name
-    {
-        return weaponID switch
-        {
-            1 => "Sphere",
-            2 => "Cube",
-            3 => "Cone",
-            4 => "Cylinder",
-            _ => "None"
-        };
-    }
 }
 
 
+
 // Editor/Inspector related
+
 [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
 public class ReadOnlyFieldAttribute : PropertyAttribute
 {

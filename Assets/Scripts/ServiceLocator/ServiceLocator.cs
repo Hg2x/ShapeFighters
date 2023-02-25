@@ -10,6 +10,8 @@ namespace ICKT.ServiceLocator
     {
         private static readonly Dictionary<Type, object> Services = new();
 
+        // TODO: unregister
+
         [RuntimeInitializeOnLoadMethod]
         public static void Initialize()
         {

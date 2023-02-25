@@ -22,7 +22,7 @@ public class WeaponSphere : WeaponBase
                 _Angle += _BattleData.Speed * Time.fixedDeltaTime;
                 float x = Mathf.Cos(_Angle) * _Radius;
                 float z = Mathf.Sin(_Angle) * _Radius;
-                Vector3 pos = _Player.transform.position + new Vector3(x, 0, z);
+                Vector3 pos = _PlayerTransform.position + new Vector3(x, 0, z);
 
                 rb.MovePosition(pos);
             }

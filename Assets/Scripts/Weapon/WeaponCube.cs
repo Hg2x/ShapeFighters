@@ -22,14 +22,14 @@ public class WeaponCube : WeaponBase
                 {
                     _WideCube.SetActive(true);
                     _Distance += _BattleData.Speed * Time.fixedDeltaTime;
-                    Vector3 pos = _Player.transform.position + new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
+                    Vector3 pos = _PlayerTransform.position + new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
                     rb.MovePosition(pos);
                 }
                 else
                 {
                     _WideCube.SetActive(false);
                     _Distance = 0f;
-                    rb.MovePosition(_Player.transform.position + new Vector3(0, 0, 1f));
+                    rb.MovePosition(_PlayerTransform.position + new Vector3(0, 0, 1f));
                 }
             }
         }

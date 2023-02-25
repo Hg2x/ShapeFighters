@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void HealthChangedDelegate(int currentHealth, int maxHealth);
 public delegate void UnitDiedDelegate(UnitBase unit);
 
 [RequireComponent(typeof(Rigidbody))]
 public abstract class UnitBase : MonoBehaviour
 {
-    public event HealthChangedDelegate OnHealthChanged;
-    public event UnitDiedDelegate OnUnitDied;
+    public event UnitDiedDelegate OnUnitDied; // TODO: maybe do smth about this duplicate, alrdy exists in unitStatusData
 
     [SerializeField] protected UnitStatusData _UnitData;
     protected Rigidbody _Rigidbody;
-    [HideInInspector] public Vector3 CurrentDirection { get; protected set; }
+    protected const int _TurnSpeedMultiplier = 40;
 
     protected List<BuffBase> _Buffs = new();
 
@@ -37,15 +35,16 @@ public abstract class UnitBase : MonoBehaviour
     }
 
     protected virtual void OnDisable()
-    {
-        // unsubscribe subscribed event, TODO: do unit specific delegates as well
-        if (OnHealthChanged != null)
-            foreach (var d in OnHealthChanged.GetInvocationList())
-                OnHealthChanged -= (d as HealthChangedDelegate);
+    {   
+    }
 
+    protected virtual void OnDestroy()
+    {
         if (OnUnitDied != null)
             foreach (var d in OnUnitDied.GetInvocationList())
                 OnUnitDied -= (d as UnitDiedDelegate);
+
+        _UnitData.UnsubcribeDelegates();
     }
 
     public void ResetStats()
@@ -69,40 +68,44 @@ public abstract class UnitBase : MonoBehaviour
                 _Rigidbody.MovePosition(_Rigidbody.transform.position + targetDirection);
             }
 
-            float singleStep = _UnitData.TurnSpeed * Time.deltaTime;
-            CurrentDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-            _Rigidbody.MoveRotation(Quaternion.LookRotation(CurrentDirection));
+            if (targetDirection != Vector3.zero)
+            {
+                float singleStep = _UnitData.TurnSpeed * _TurnSpeedMultiplier * Time.deltaTime;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+                _Rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, singleStep));
+            }
         }
     }
 
-    protected virtual void SlipperyMove(Vector3 inputVector)
+    protected virtual void SlipperyMove(Vector3 inputVector) // TODO: maybe make the rotation chaotic
     {
-        var targetDirection = _UnitData.MoveSpeed * 1f * Time.deltaTime * inputVector;
+        var targetDirection = _UnitData.MoveSpeed * Time.deltaTime * inputVector;
         _Rigidbody.AddForce(targetDirection, ForceMode.Impulse);
 
-        float singleStep = _UnitData.TurnSpeed * Time.deltaTime;
-        CurrentDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-        _Rigidbody.MoveRotation(Quaternion.LookRotation(CurrentDirection));
+        float singleStep = _UnitData.TurnSpeed * _TurnSpeedMultiplier * Time.deltaTime;
+        Quaternion targetRotation = Quaternion.LookRotation(transform.forward, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, singleStep);
+        _Rigidbody.MoveRotation(transform.rotation);
     }
 
     protected virtual void TakeDamage(int damageTaken)
     {
-        // TODO: move these to UnitStatusData
-        if (!_UnitData.IsInvincible)
+        _UnitData.TakeDamage(damageTaken);
+        if (_UnitData.Health > 0)
         {
-            float dmgFloat = damageTaken;
-            _UnitData.Health -= (int)(dmgFloat / Mathf.Pow(2, _UnitData.DefenseModifer));
-            OnHealthChanged?.Invoke(_UnitData.Health, _UnitData.MaxHealth);
-            if (_UnitData.Health <= 0)
-            {
-                _UnitData.Health = 0;
-                StopCoroutine(nameof(TestShowDamagedShader));
-                OnUnitDied?.Invoke(this);
-            }
-            else
-            {
-                StartCoroutine(TestShowDamagedShader(0.5f));
-            }
+            StartCoroutine(TestShowDamagedShader(0.5f));
+        }
+        else
+        {
+            OnUnitDied?.Invoke(this);
+        }
+    }
+
+    protected virtual void OnDeath(UnitBase unit)
+    {
+        if (unit == this)
+        {
+            gameObject.SetActive(false);
         }
     }
 

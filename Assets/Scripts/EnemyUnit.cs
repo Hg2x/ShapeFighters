@@ -1,3 +1,4 @@
+using ICKT.ServiceLocator;
 using UnityEngine;
 
 public class EnemyUnit : UnitBase, IDamageable
@@ -7,35 +8,30 @@ public class EnemyUnit : UnitBase, IDamageable
     private Vector3 _MoveDirection;
 
     // TODO: implement better pathfinding
+
     public void Damage(int damageTaken, DamageSource source)
     {
         if (source == DamageSource.Friendly)
         {
             TakeDamage(damageTaken);
-
-            if (_UnitData.Health <= 0)
-            {
-                _UnitData.Health = 0;
-                GameInstance.GetLevelManager().GivePlayerExp(_UnitData.GetExpWorth());
-                gameObject.SetActive(false);
-            }
         }
-    }
-
-    public void SetTargetPlayer(Transform target)
-    {
-        _Target = target;
-    }
-    public void SetSpawnIndex(int index)
-    {
-        SpawnIndex = index;
     }
 
     protected override void Awake()
     {
         base.Awake();
 
-        _Rigidbody = GetComponent<Rigidbody>();
+        OnUnitDied += OnDeath;
+    }
+
+    public void SetTargetPlayer(Transform target)
+    {
+        _Target = target;
+    }
+
+    public void SetSpawnIndex(int index)
+    {
+        SpawnIndex = index;
     }
 
     protected override void Update()
@@ -58,5 +54,14 @@ public class EnemyUnit : UnitBase, IDamageable
     protected int CalculateDamageToPlayer()
     {
         return (int)(Const.ENEMY_BASE_DAMAGE * _UnitData.AttackModifier);
+    }
+
+    protected override void OnDeath(UnitBase unit)
+    {
+        if (unit == this)
+        {
+            ServiceLocator.Get<LevelManager>().GivePlayerExp(_UnitData.GetExpWorth());
+            gameObject.SetActive(false);
+        }
     }
 }

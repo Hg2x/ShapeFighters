@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using ICKT.ServiceLocator;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,28 +12,22 @@ public class BattleUI_HealthBar : MonoBehaviour
     [SerializeField] private Image _HealthBar;
     [SerializeField] private Image _ExpBar;
 
-    public void Init(UnitStatusData playerStats)
+    public void Init(PlayerStatusData data)
     {
-        if (playerStats == null)
+        if (data != null)
         {
-            Debug.Log("PlayerStats is null");
-            return;
-        }
-
-        if (GameInstance.GetLevelManager().PlayerUnitReference.TryGetComponent<PlayerUnit>(out var playerUnitRef))
-        {
-            playerUnitRef.OnHealthChanged += UpdateHealthBar;
-            playerUnitRef.OnExpChanged += UpdateExpBar;
-            playerUnitRef.OnUnitDied += OnPlayerDied;
-            playerUnitRef.OnLevelUp += SetLevelText;
-
-            RefreshDisplay(playerStats);
+            SubscribeToPlayer(data);
+            RefreshDisplay(data);
         }
     }
 
     private void OnDisable()
     {
-        // TODO: need unsubsricbe?
+        var data = ServiceLocator.Get<LevelManager>().PlayerStatusData;
+        if (data != null) // TODO : fix error when not being able to access PlayerUnit
+        {
+            UnsubscribeToPlayer(data);
+        }
     }
 
     public void RefreshDisplay(UnitStatusData playerStats)
@@ -43,6 +36,22 @@ public class BattleUI_HealthBar : MonoBehaviour
         SetMaxHealthText(playerStats.MaxHealth);
         UpdateExpBar(playerStats.CurrentExp, playerStats.NextLevelExp);
         SetLevelText(playerStats.Level);
+    }
+
+    private void SubscribeToPlayer(PlayerStatusData data)
+    {
+        data.OnHealthChanged += UpdateHealthBar;
+        data.OnExpChanged += UpdateExpBar;
+        data.OnZeroHealth += OnPlayerDied;
+        data.OnLevelUp += SetLevelText;
+    }
+
+    private void UnsubscribeToPlayer(PlayerStatusData data)
+    {
+        data.OnHealthChanged -= UpdateHealthBar;
+        data.OnExpChanged -= UpdateExpBar;
+        data.OnZeroHealth -= OnPlayerDied;
+        data.OnLevelUp -= SetLevelText;
     }
 
     private void UpdateHealthBar(int currentHealth, int maxHealth)
@@ -58,12 +67,12 @@ public class BattleUI_HealthBar : MonoBehaviour
         _ExpBar.fillAmount = (float)currentExp / MaxExp;
     }
 
-    private void OnPlayerDied(UnitBase player)
+    private void OnPlayerDied()
     {
-        if (player != null)
+        var data = ServiceLocator.Get<LevelManager>().PlayerStatusData;
+        if (data != null)
         {
-            player.OnHealthChanged -= UpdateHealthBar;
-            player.OnUnitDied -= OnPlayerDied;
+            UnsubscribeToPlayer(data);
         }
     }
 
