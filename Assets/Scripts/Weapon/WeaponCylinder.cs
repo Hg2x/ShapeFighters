@@ -7,24 +7,26 @@ public class WeaponCylinder : WeaponBase
     [SerializeField] private CylinderWeaponComponent _CylinderRef;
     protected LevelManager _LevelManager;
 
-    // TODO: scaling multipliers and more cylinder spawns as level goes up
-
     protected override void ArmSkill()
     {
-        var tempAmount = 3; // TODO: change to _WeaponAmount later
+        var amount = _BattleData.Amount;
+        if (amount < 0)
+        {
+            amount = 0;
+        }
         if (_LevelManager == null)
         {
             _LevelManager = ServiceLocator.Get<LevelManager>();
         }
-        Vector3[] enemyPositions = _LevelManager.GetRandomDifferentEnemyPositions(tempAmount);
+        Vector3[] enemyPositions = _LevelManager.GetRandomDifferentEnemyPositions(amount);
         if (enemyPositions?.Length > 0)
         {
-            if (tempAmount > enemyPositions.Length)
+            if (amount > enemyPositions.Length)
             {
-                tempAmount = enemyPositions.Length;
+                amount = enemyPositions.Length;
             }
 
-            for (int i = 0; i < tempAmount; i++)
+            for (int i = 0; i < amount; i++)
             {
                 var location = enemyPositions[i];
                 var cylinder = Instantiate(_CylinderRef, location, Quaternion.identity, transform);
