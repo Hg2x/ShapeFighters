@@ -124,7 +124,13 @@ public abstract class WeaponBase : MonoBehaviour
             //Deactivate();
             _BattleData = _WeaponData.GetWeaponBattleData(_WeaponLevel);
             //Activate();
+            OnLevelUp();
         }
+    }
+
+    protected virtual void OnLevelUp()
+    {
+
     }
 
     private void UseSkill()

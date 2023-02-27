@@ -6,8 +6,6 @@ public class WeaponCone : WeaponBase
 {
     [SerializeField] private WeaponComponent _ConeRef;
 
-    // TODO: scaling multipliers and faster cone spawns as level goes up
-
     protected override void ArmSkill() 
     {
         SpawnConeProjectile();

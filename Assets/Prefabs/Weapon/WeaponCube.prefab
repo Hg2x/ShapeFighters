@@ -44,6 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2b1ac3e5a785c4eab2ba65a2f4bbd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _WideCubeRef: {fileID: 4111265881022506281, guid: 4c352bd31fa2c1f478d48749b72705f2,
+  _WideCubeRef: {fileID: 4502372629421780491, guid: 4c352bd31fa2c1f478d48749b72705f2,
     type: 3}
-  _Speed: 10

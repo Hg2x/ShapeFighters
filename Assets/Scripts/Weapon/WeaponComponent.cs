@@ -4,6 +4,7 @@ public class WeaponComponent : MonoBehaviour
 {
     protected float _KnockbackForce = 0f;
     protected float _ExtraDamageMultiplier = 1f;
+    protected float _Size = 1f;
     
     public void SetKnockbackForce(float knockbackForce)
     {
@@ -15,6 +16,14 @@ public class WeaponComponent : MonoBehaviour
         if (multiplier > 1f)
         {
             _ExtraDamageMultiplier = multiplier;
+        }
+    }
+
+    public virtual void SetSize(float size)
+    {
+        if (size > 0f)
+        {
+            _Size = size;
         }
     }
 

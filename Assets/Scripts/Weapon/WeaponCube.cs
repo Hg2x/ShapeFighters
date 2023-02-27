@@ -2,40 +2,61 @@ using UnityEngine;
 
 public class WeaponCube : WeaponBase
 {
-    [SerializeField] private GameObject _WideCubeRef;
+    [SerializeField] private CubeWeaponComponent _WideCubeRef;
     private float _Distance;
     private float _DurationLeft;
     private bool _DoAttack;
-    private GameObject _WideCube;
-
-    // TODO: scaling multipliers and multiple cube in 4 directions as level goes up
+    private readonly CubeWeaponComponent[] _WideCubes = new CubeWeaponComponent[4];
 
     private void FixedUpdate()
     {
         if (_DurationLeft > 0)
         {
             _DurationLeft -= Time.fixedDeltaTime;
-            _WideCube.TryGetComponent(out Rigidbody rb);
-            if (rb != null)
+            for (int i = 0; i < _BattleData.Amount; i++)
             {
-                if (_DurationLeft > 0)
+                if (_WideCubes[i].TryGetComponent<Rigidbody>(out var rb))
                 {
-                    _WideCube.SetActive(true);
-                    _Distance += _BattleData.Speed * Time.fixedDeltaTime;
-                    Vector3 pos = _PlayerTransform.position + new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
-                    rb.MovePosition(pos);
-                }
-                else
-                {
-                    _WideCube.SetActive(false);
-                    _Distance = 0f;
-                    rb.MovePosition(_PlayerTransform.position + new Vector3(0, 0, 1f));
+                    if (_DurationLeft > 0)
+                    {
+                        _WideCubes[i].gameObject.SetActive(true);
+                        _Distance += _BattleData.Speed * Time.fixedDeltaTime;
+
+                        Vector3 pos = _PlayerTransform.position;
+                        switch (i)
+                        {
+                            case 0:
+                                pos += new Vector3(0, 0, _Distance * _FinalAttackSpeed + 1f);
+                                break;
+                            case 1:
+                                pos += new Vector3(-(_Distance * _FinalAttackSpeed + 1f), 0, 0);
+                                break;
+                            case 2:
+                                pos += new Vector3((_Distance * _FinalAttackSpeed + 1f), 0, 0);
+                                break;
+                            case 3:
+                                pos += new Vector3(0, 0, -(_Distance * _FinalAttackSpeed + 1f));
+                                break;
+                        }
+
+                        rb.MovePosition(pos);
+                    }
+                    else
+                    {
+                        _WideCubes[i].gameObject.SetActive(false);
+                        _Distance = 0f;
+                        rb.MovePosition(_PlayerTransform.position + new Vector3(0, 0, 1f));
+                    }
                 }
             }
         }
         else
         {
-            _WideCube.SetActive(false);
+            for (int i = 0; i < _BattleData.Amount; i++)
+            {
+                _WideCubes[i].gameObject.SetActive(false);
+            }
+
             if (_DoAttack)
             {
                 _DurationLeft = _BattleData.Duration / _FinalAttackSpeed;
@@ -47,11 +68,30 @@ public class WeaponCube : WeaponBase
     public override void LoadWeaponData(string weaponDataString)
     {
         base.LoadWeaponData(weaponDataString);
-        _WideCube = Instantiate(_WideCubeRef, transform);
-        _WideCube.TryGetComponent(out CubeWeaponComponent component);
-        if (component != null)
+        for (int i = 0; i < _WideCubes.Length; i++)
         {
-            component.SetKnockbackForce(_BattleData.KnockbackForce);
+            if (_WideCubes[i] == null)
+            {
+                _WideCubes[i] = Instantiate(_WideCubeRef, transform);
+            }
+            _WideCubes[i].SetKnockbackForce(_BattleData.KnockbackForce);
+            _WideCubes[i].SetSize(_BattleData.Size);
+            _WideCubes[i].gameObject.SetActive(false);
+            if (i == 1 || i == 2)
+            {
+                _WideCubes[i].transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            }
+        }
+    }
+
+    protected override void OnLevelUp()
+    {
+        base.OnLevelUp();
+
+        for (int i = 0; i < _WideCubes.Length; i++)
+        {
+            _WideCubes[i].SetKnockbackForce(_BattleData.KnockbackForce);
+            _WideCubes[i].SetSize(_BattleData.Size);
         }
     }
 
