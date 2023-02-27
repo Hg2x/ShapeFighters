@@ -24,6 +24,7 @@ public class WeaponComponent : MonoBehaviour
         if (size > 0f)
         {
             _Size = size;
+            transform.localScale = new Vector3(size, size, size);
         }
     }
 
